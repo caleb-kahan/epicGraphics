@@ -5,6 +5,7 @@
     * Creating 2D polygons with an arbitrary number of edges defined by the user
     * Creating complex 2D shapes using bounding by functions
     * Creating complex 2D shapes by intersecting two complex 2D shapes or unionizing. 
+    * Mesh command - fill in 2D shapes
     * Define the plane as the xy plane, xz plane, or yz plane
   * Extrusion Command
     * Create a 3D solid by extruding a given polygon into either the positive or negative direction of the perpindicular axis
