@@ -225,6 +225,9 @@ def p_command_box(p):
     cmd['args'] = p[arg_start:arg_start+6]
     commands.append(cmd)
 
+def p_command_shape(p):
+    """command : SHAPE TEXT SYMBOL PLANE NUMBER"""
+
 def p_command_line(p):
     """command : LINE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
                | LINE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL

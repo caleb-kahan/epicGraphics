@@ -2957,7 +2957,7 @@ class ParserReflect(object):
         self.get_tokens()
         self.get_precedence()
         self.get_pfunctions()
-
+        
     # Validate all of the information
     def validate_all(self):
         self.validate_start()
