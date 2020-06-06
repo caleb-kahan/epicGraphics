@@ -5,6 +5,7 @@ tokens = (
     "ID",
     "XYZ",
     "DOUBLE",
+    "LIST_TUPLES",
     "INT",
     "COMMENT",
     "LIGHT",
@@ -112,6 +113,12 @@ def t_DOUBLE(t):
     t.value = float(t.value)
     return t
 
+def t_LIST_TUPLES(t):
+    r"\[\(\d+,\d+\)(,\s*\(\d+,\d+\))*\]"
+    t.value.replace(" ", "")
+    t.value = eval(t.value)
+    return t
+
 def t_COMMENT(t):
     r"//.*"
     return t
@@ -151,6 +158,10 @@ def p_TEXT(p):
 
 def p_NUMBER(p):
     """NUMBER : DOUBLE"""
+    p[0] = p[1]
+
+def p_POINTLIST(p):
+    """POINTLIST : LIST_TUPLES"""
     p[0] = p[1]
 
 def p_command_stack(p):
@@ -226,8 +237,9 @@ def p_command_box(p):
     commands.append(cmd)
 
 def p_command_shape(p):
-    """command : SHAPE TEXT SYMBOL PLANE NUMBER 
-               | SHAPE TEXT PLANE NUMBER"""
+    """command : SHAPE TEXT SYMBOL PLANE POINTLIST
+               | SHAPE TEXT PLANE POINTLIST"""
+    print(p[5][0][0])
 
 def p_command_line(p):
     """command : LINE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
