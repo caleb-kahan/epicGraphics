@@ -237,9 +237,10 @@ def p_command_box(p):
     commands.append(cmd)
 
 def p_command_shape(p):
-    """command : SHAPE TEXT SYMBOL PLANE POINTLIST
-               | SHAPE TEXT PLANE POINTLIST"""
-    print(p[5][0][0])
+    """command : SHAPE SYMBOL PLANE POINTLIST NUMBER NUMBER NUMBER"""
+    cmd = {'op' : p[1], 'constants' : p[2], 'cs' : None, 'args':[], 'name': None}
+    symbols[p[2]] = ["shape",{"points": p[4], "plane": p[3], "color" : p[5:]}]
+    commands.append(cmd)
 
 def p_command_line(p):
     """command : LINE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
