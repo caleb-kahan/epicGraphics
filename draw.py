@@ -7,6 +7,9 @@ def draw_shape(name, screen, zbuffer, view, ambient, light, symbols):
     plane = shape[1]['plane']
     points = shape[1]['points']
     color = shape[1]['color']
+    color[0] = int(color[0])
+    color[1] = int(color[1])
+    color[2] = int(color[2])
     print("Plane:")
     print(plane)
     print("Points:")
@@ -431,4 +434,3 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
         z+= dz
         loop_start+= 1
     plot( screen, zbuffer, color, x, y, z )
->>>>>>> 9f5cc3a910ed48b5b8150674ab9f9aff449e7493
