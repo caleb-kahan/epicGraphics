@@ -1,2 +1,4 @@
-constants MYLIGHTS 2 3 4 5 6 7 8 9 10
-shape caleb xy [(5,10)] 255 0 0
+constants shiny_purple 0.2 0.3 0.7 0.0 0.0 0.0 0.0 0.3 0.7
+shape caleb xy [(50,100),(150,200),(200,240)] 255 0 0
+drawshape caleb
+save caleb.png

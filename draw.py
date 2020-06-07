@@ -2,6 +2,38 @@ from display import *
 from matrix import *
 from gmath import *
 
+def draw_shape(name, screen, zbuffer, view, ambient, light, symbols):
+    shape = symbols[name]
+    plane = shape[1]['plane']
+    points = shape[1]['points']
+    color = shape[1]['color']
+    print("Plane:")
+    print(plane)
+    print("Points:")
+    print(points)
+    print("Color:")
+    print(color)
+    if len(points) < 2:
+        print('Need at least 2 points to draw')
+        return
+    for i in range(len(points)):
+        if plane == 'xy':
+            x0,x1 = points[i-1][0],points[i][0]
+            y0,y1 = points[i-1][1],points[i][1]
+            z0,z1 = 0,0
+        elif plane == 'xz':
+            x0,x1 = points[i-1][0],points[i][0]
+            y0,y1 = 0,0
+            z0,z1 = points[i-1][1],points[i][1]
+        elif plane == 'yz':
+            x0,x1 = 0,0
+            y0,y1 = points[i-1][0],points[i][0]
+            z0,z1 = points[i-1][1],points[i][1]
+        print("Line"),
+        print(i+1)
+        print(x0, y0, z0, x1, y1, z1)
+        draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color )
+
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
     if x0 > x1:
         tx = x0
