@@ -192,7 +192,7 @@ def run(filename):
                 tmp = []
             elif c == 'drawshape':
                 name = cmd['name']
-                #draw_shape(name,screen,zbuffer)
+                draw_shape(name,screen,zbuffer, symbols)
             elif c == 'move':
                 if command['knob']:
                     knob_value = symbols[command['knob']][1]
