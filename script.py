@@ -106,6 +106,8 @@ def run(filename):
         print("Parsing failed.")
         return
 
+    print(symbols)
+
     view = [0,
             0,
             1];
@@ -191,8 +193,8 @@ def run(filename):
                 draw_lines(tmp, screen, zbuffer, color)
                 tmp = []
             elif c == 'drawshape':
-                name = cmd['name']
-                draw_shape(name,screen,zbuffer, symbols)
+                name = command['name']
+                draw_shape(name, screen, zbuffer, view, ambient, light, symbols)
             elif c == 'move':
                 if command['knob']:
                     knob_value = symbols[command['knob']][1]
@@ -227,7 +229,7 @@ def run(filename):
             elif c == 'display':
                 display(screen)
             elif c == 'save':
-                save_extension(screen, args[0])
+                save_extension(screen, args[0] + '.png')
             # end operation loop
         if num_frames > 1:
             fname = 'anim/%s%03d.png'%(name, f)
