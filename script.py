@@ -190,6 +190,9 @@ def run(filename):
                 matrix_mult( stack[-1], tmp )
                 draw_lines(tmp, screen, zbuffer, color)
                 tmp = []
+            elif c == 'drawshape':
+                name = cmd['name']
+                #draw_shape(name,screen,zbuffer)
             elif c == 'move':
                 if command['knob']:
                     knob_value = symbols[command['knob']][1]

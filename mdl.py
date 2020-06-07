@@ -245,7 +245,7 @@ def p_command_shape(p):
     commands.append(cmd)
 
 def p_command_drawshape(p):
-    """command: DRAWSHAPE SYMBOL"""
+    """command : DRAWSHAPE SYMBOL"""
     cmd = {'op':p[1], 'name':p[2]}
     commands.append(cmd)
 
