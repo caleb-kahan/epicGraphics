@@ -2,20 +2,95 @@ from display import *
 from matrix import *
 from gmath import *
 
-def draw_shape(name, screen, zbuffer, view, ambient, light, symbols):
+def add_extrusion(tmp, name, length, symbols):
+    shape = symbols[name]
+    points = shape[1]['points']
+    generator = generate_extrusion(name, length, symbols)
+    for i in range(length-1):
+        for j in range(len(points)):
+            start = i * len(points) + j
+            if j != len(points) - 1:
+                add_polygon( tmp,
+                             generator[start][0],
+                             generator[start][1],
+                             generator[start][2],
+                             generator[start+1][0],
+                             generator[start+1][1],
+                             generator[start+1][2],
+                             generator[start+len(points)][0],
+                             generator[start+len(points)][1],
+                             generator[start+len(points)][2])
+                # print(start, start+1, start+len(points))
+                add_polygon( tmp,
+                             generator[start][0],
+                             generator[start][1],
+                             generator[start][2],
+                             generator[start+1][0],
+                             generator[start+1][1],
+                             generator[start+1][2],
+                             generator[start+1+len(points)][0],
+                             generator[start+1+len(points)][1],
+                             generator[start+1+len(points)][2])
+                # print(start, start+1, start+1+len(points))
+            else:
+                add_polygon( tmp,
+                             generator[start][0],
+                             generator[start][1],
+                             generator[start][2],
+                             generator[i*len(points)][0],
+                             generator[i*len(points)][1],
+                             generator[i*len(points)][2],
+                             generator[start+len(points)][0],
+                             generator[start+len(points)][1],
+                             generator[start+len(points)][2])
+                # print(start, i*len(points), start+len(points))
+                add_polygon( tmp,
+                             generator[start][0],
+                             generator[start][1],
+                             generator[start][2],
+                             generator[i*len(points)][0],
+                             generator[i*len(points)][1],
+                             generator[i*len(points)][2],
+                             generator[(i+1)*len(points)][0],
+                             generator[(i+1)*len(points)][1],
+                             generator[(i+1)*len(points)][2])
+                # print(start, i*len(points), (i+1)*len(points))
+
+
+
+def generate_extrusion(name, length, symbols):
+    shape = symbols[name]
+    generator = []
+    plane = shape[1]['plane']
+    points = shape[1]['points']
+    if length == 0:
+        print('Need at least one thickness to proceed')
+        return
+    elif length > 0:
+        neg = 1
+    else:
+        neg = -1
+    for i in range(abs(length)):
+        for j in range(len(points)):
+            if plane == 'xy':
+                x = points[j][0]
+                y = points[j][1]
+                z = neg * i
+            elif plane == 'xz':
+                x = points[j][0]
+                y = neg * i
+                z = points[j][1]
+            elif plane == 'yz':
+                x = neg * i
+                y = points[j][0]
+                z = points[j][1]
+            generator.append( [x, y, z] )
+    return generator
+
+def add_shape(tmp, name, symbols):
     shape = symbols[name]
     plane = shape[1]['plane']
     points = shape[1]['points']
-    color = shape[1]['color']
-    color[0] = int(color[0])
-    color[1] = int(color[1])
-    color[2] = int(color[2])
-    print("Plane:")
-    print(plane)
-    print("Points:")
-    print(points)
-    print("Color:")
-    print(color)
     if len(points) < 2:
         print('Need at least 2 points to draw')
         return
@@ -32,10 +107,8 @@ def draw_shape(name, screen, zbuffer, view, ambient, light, symbols):
             x0,x1 = 0,0
             y0,y1 = points[i-1][0],points[i][0]
             z0,z1 = points[i-1][1],points[i][1]
-        print("Line"),
-        print(i+1)
-        print(x0, y0, z0, x1, y1, z1)
-        draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color )
+        tmp.append( [x0, y0, z0, 1] )
+        tmp.append( [x1, y1, z1, 1] )
 
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
     if x0 > x1:

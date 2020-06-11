@@ -241,12 +241,17 @@ def p_command_box(p):
 def p_command_shape(p):
     """command : SHAPE SYMBOL PLANE POINTLIST NUMBER NUMBER NUMBER"""
     cmd = {'op' : p[1], 'name' : p[2], 'cs' : None, 'args':[]}
-    symbols[p[2]] = ["shape",{"plane": p[3], "points": p[4], 'color': p[5:]}]
+    symbols[p[2]] = ['shape',{'plane': p[3], 'points': p[4], 'color': p[5:]}]
     commands.append(cmd)
 
 def p_command_drawshape(p):
     """command : DRAWSHAPE SYMBOL"""
     cmd = {'op': p[1], 'name': p[2], 'args': []}
+    commands.append(cmd)
+
+def p_command_extrusion(p):
+    """command : EXTRUSION SYMBOL SYMBOL NUMBER"""
+    cmd = {'op' : p[1], 'name' : p[2], 'constants' : p[3], 'cs' : None, 'args': p[4]}
     commands.append(cmd)
 
 def p_command_line(p):

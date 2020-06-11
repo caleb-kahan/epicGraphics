@@ -194,7 +194,25 @@ def run(filename):
                 tmp = []
             elif c == 'drawshape':
                 shapeName = command['name']
-                draw_shape(shapeName, screen, zbuffer, view, ambient, light, symbols)
+                add_shape(tmp, shapeName, symbols)
+                matrix_mult( stack[-1], tmp )
+                shape = symbols[shapeName]
+                color = shape[1]['color']
+                color[0] = int(color[0])
+                color[1] = int(color[1])
+                color[2] = int(color[2])
+                draw_lines(tmp, screen, zbuffer, color)
+                tmp = []
+            elif c == 'extrusion':
+                shapeName = command['name']
+                # reflect = command['constants']
+                length = int(command['args'])
+                add_extrusion(tmp, shapeName, length, symbols)
+                matrix_mult( stack[-1], tmp )
+                # print(tmp)
+                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
+                tmp = []
+                reflect = '.white'
             elif c == 'move':
                 if command['knob']:
                     knob_value = symbols[command['knob']][1]
