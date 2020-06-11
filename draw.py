@@ -1,6 +1,8 @@
 from display import *
 from matrix import *
 from gmath import *
+import random
+from shapely.geometry import Polygon, Point
 
 def add_extrusion(tmp, name, length, symbols):
     shape = symbols[name]
@@ -109,6 +111,9 @@ def add_shape(tmp, name, symbols):
             z0,z1 = points[i-1][1],points[i][1]
         tmp.append( [x0, y0, z0, 1] )
         tmp.append( [x1, y1, z1, 1] )
+
+def fill_shape(tmp):
+    pass
 
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
     if x0 > x1:
