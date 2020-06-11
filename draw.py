@@ -1,8 +1,6 @@
 from display import *
 from matrix import *
 from gmath import *
-import random
-from shapely.geometry import Polygon, Point
 
 def add_extrusion(tmp, name, length, symbols):
     shape = symbols[name]
@@ -109,12 +107,45 @@ def add_shape(tmp, name, symbols):
             x0,x1 = 0,0
             y0,y1 = points[i-1][0],points[i][0]
             z0,z1 = points[i-1][1],points[i][1]
-        tmp.append( [x0, y0, z0, 1] )
-        tmp.append( [x1, y1, z1, 1] )
+        draw_line(int(x0),int(y0),int(z0),int(x1),int(y1),int(z1), None, None, None, True, tmp)
 
-def fill_shape(tmp):
-    pass
+def fill_shape(tmp, name, symbols):
+    plane = shape[1]['plane']
+    pointStart = guaranteedPoint(tmp)
+    fill_point(tmp,pointStart[0],pointStart[1],pointStart[2],plane)
 
+def fill_point(tmp, x, y, z, plane):
+    if [x,y,z,1] not in tmp:
+        tmp.append([x,y,z,1])
+        tmp.append([x,y,z,1])
+        if plan == 'xy':
+            fill_point(tmp,x+1,y,z,plane)
+            fill_point(tmp,x,y+1,z,plane)
+            fill_point(tmp,x-1,y,z,plane)
+            fill_point(tmp,x,y-1,z,plane)
+        if plan == 'xz':
+            fill_point(tmp,x+1,y,z,plane)
+            fill_point(tmp,x,y,z+1,plane)
+            fill_point(tmp,x-1,y,z,plane)
+            fill_point(tmp,x,y,z-1,plane)
+        if plan == 'yz':
+            fill_point(tmp,x,y,z+1,plane)
+            fill_point(tmp,x,y+1,z,plane)
+            fill_point(tmp,x,y,z-1,plane)
+            fill_point(tmp,x,y-1,z,plane)
+    return;
+
+def guaranteedPoint(tmp):
+    xCor = [tmp[i][0] for i in range(len(tmp))]
+    yCor = [tmp[i][1] for i in range(len(tmp))]
+    zCor = [tmp[i][2] for i in range(len(tmp))]
+    xMin = min(xCor)
+    xMax = max(xCor)
+    yMin = min(yCor)
+    yMax = max(ycor)
+    zMin = min(zCor)
+    zMax = max(zCor)
+    return [int(xMin+xMax)//2,int(yMin+yMax)//2,int(zMin+zMax)//2]
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
     if x0 > x1:
         tx = x0
@@ -424,7 +455,7 @@ def draw_lines( matrix, screen, zbuffer, color ):
                    int(matrix[point+1][0]),
                    int(matrix[point+1][1]),
                    matrix[point+1][2],
-                   screen, zbuffer, color)
+                   screen, zbuffer, color, False, None)
         point+= 2
 
 def add_edge( matrix, x0, y0, z0, x1, y1, z1 ):
@@ -435,8 +466,7 @@ def add_point( matrix, x, y, z=0 ):
     matrix.append( [x, y, z, 1] )
 
 
-
-def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
+def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color, addition, tmp):
 
     #swap points if going right -> left
     if x0 > x1:
@@ -498,7 +528,11 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
     dz = (z1 - z0) / distance if distance != 0 else 0
 
     while ( loop_start < loop_end ):
-        plot( screen, zbuffer, color, x, y, z )
+        if addition:
+            tmp.append([x,y,z,1])
+            tmp.append([x,y,z,1])
+        else:
+            plot( screen, zbuffer, color, x, y, z )
         if ( (wide and ((A > 0 and d > 0) or (A < 0 and d < 0))) or
              (tall and ((A > 0 and d < 0) or (A < 0 and d > 0 )))):
 
@@ -511,4 +545,8 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
             d+= d_east
         z+= dz
         loop_start+= 1
-    plot( screen, zbuffer, color, x, y, z )
+    if addition:
+        tmp.append([x,y,z,1])
+        tmp.append([x,y,z,1])
+    else:
+        plot( screen, zbuffer, color, x, y, z )
