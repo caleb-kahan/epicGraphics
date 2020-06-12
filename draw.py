@@ -110,6 +110,7 @@ def add_shape(tmp, name, symbols):
         draw_line(int(x0),int(y0),int(z0),int(x1),int(y1),int(z1), None, None, None, True, tmp)
 
 def fill_shape(tmp, name, symbols):
+    shape = symbols[name]
     plane = shape[1]['plane']
     pointStart = guaranteedPoint(tmp)
     fill_point(tmp,pointStart[0],pointStart[1],pointStart[2],plane)
