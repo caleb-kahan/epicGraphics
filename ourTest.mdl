@@ -3,5 +3,6 @@ push
 move 250 250 0
 rotate x 60
 shape caleb xy [(0,0),(100,0),(100,100),(50,150),(0,100)] 255 0 0
-extrusion caleb shiny_purple 200
+drawshape caleb
+//extrusion caleb shiny_purple 200
 save caleb.png
