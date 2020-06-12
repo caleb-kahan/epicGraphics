@@ -109,44 +109,51 @@ def add_shape(tmp, name, symbols):
             z0,z1 = points[i-1][1],points[i][1]
         draw_line(int(x0),int(y0),int(z0),int(x1),int(y1),int(z1), None, None, None, True, tmp)
 
-def fill_shape(tmp, name, symbols):
+def fill_points(tmp, name, symbols):
     shape = symbols[name]
     plane = shape[1]['plane']
-    pointStart = guaranteedPoint(tmp)
-    fill_point(tmp,pointStart[0],pointStart[1],pointStart[2],plane)
-
-def fill_point(tmp, x, y, z, plane):
-    if [x,y,z,1] not in tmp:
-        tmp.append([x,y,z,1])
-        tmp.append([x,y,z,1])
-        if plan == 'xy':
-            fill_point(tmp,x+1,y,z,plane)
-            fill_point(tmp,x,y+1,z,plane)
-            fill_point(tmp,x-1,y,z,plane)
-            fill_point(tmp,x,y-1,z,plane)
-        if plan == 'xz':
-            fill_point(tmp,x+1,y,z,plane)
-            fill_point(tmp,x,y,z+1,plane)
-            fill_point(tmp,x-1,y,z,plane)
-            fill_point(tmp,x,y,z-1,plane)
-        if plan == 'yz':
-            fill_point(tmp,x,y,z+1,plane)
-            fill_point(tmp,x,y+1,z,plane)
-            fill_point(tmp,x,y,z-1,plane)
-            fill_point(tmp,x,y-1,z,plane)
-    return;
-
-def guaranteedPoint(tmp):
+    points = shape[1]['points']
+    print(points)
     xCor = [tmp[i][0] for i in range(len(tmp))]
     yCor = [tmp[i][1] for i in range(len(tmp))]
     zCor = [tmp[i][2] for i in range(len(tmp))]
     xMin = min(xCor)
     xMax = max(xCor)
     yMin = min(yCor)
-    yMax = max(ycor)
+    yMax = max(yCor)
     zMin = min(zCor)
     zMax = max(zCor)
-    return [int(xMin+xMax)//2,int(yMin+yMax)//2,int(zMin+zMax)//2]
+    if plane == 'xy':
+        for y in range(yMin,yMax+1):
+            status = False
+            completion = True
+            for x in range(xMin,xMax+1):
+                if (x,y) in points:
+                    if goodAngle(points,x,y) and completion == True:
+                        status = not status
+                        completion = False
+                    elif not goodAngle(points,x,y) and completion == False:
+                        status = not status
+                elif [x,y,0,1] in tmp:
+                    if completion == True:
+                        status = not status
+                        completion = False
+                else:
+                    completion = True
+                    if status:
+                        tmp.append([x,y,0,1])
+                        tmp.append([x,y,0,1])
+
+    elif plane == 'xz':
+        pass
+    elif plane == 'yz':
+        pass
+
+def goodAngle(points,x,y):
+    index = ([i for i in range(len(points)) if points[i] == (x,y)])[0]
+    return not (points[index][1] - points[index-1][1]) == (points[index][1] - points[(index+1)%len(points)][1])
+
+
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
     if x0 > x1:
         tx = x0
