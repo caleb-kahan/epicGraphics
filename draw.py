@@ -113,7 +113,9 @@ def fill_points(tmp, name, symbols):
     shape = symbols[name]
     plane = shape[1]['plane']
     points = shape[1]['points']
-    print(points)
+    badPoints = [points[i] for i in range(len(points)) if badAngle(points,points[i][0],points[i][1])]
+    allBadPoints = set(badPoints)
+    print(len(points))
     xCor = [tmp[i][0] for i in range(len(tmp))]
     yCor = [tmp[i][1] for i in range(len(tmp))]
     zCor = [tmp[i][2] for i in range(len(tmp))]
@@ -124,17 +126,20 @@ def fill_points(tmp, name, symbols):
     zMin = min(zCor)
     zMax = max(zCor)
     if plane == 'xy':
+        for i in range(0,len(tmp),2):
+            for badPoint in badPoints:
+                #print(i,j)
+                if math.sqrt(math.pow(tmp[i][0]-badPoint[0],2)+math.pow(tmp[i][1]-badPoint[1],2))<2:
+                    allBadPoints.add((tmp[i][0],tmp[i][1]))
         for y in range(yMin,yMax+1):
             status = False
             completion = True
             for x in range(xMin,xMax+1):
-                if (x,y) in points:
-                    if goodAngle(points,x,y) and completion == True:
-                        status = not status
-                        completion = False
-                    elif not goodAngle(points,x,y) and completion == False:
-                        status = not status
-                elif [x,y,0,1] in tmp:
+                if (x,y) in allBadPoints:
+                    completion = False
+                elif [x,y,0,1] in tmp or (x,y) in points:
+                    #if y == 139:
+                    #    print(x,y)
                     if completion == True:
                         status = not status
                         completion = False
@@ -143,15 +148,16 @@ def fill_points(tmp, name, symbols):
                     if status:
                         tmp.append([x,y,0,1])
                         tmp.append([x,y,0,1])
+                        #print(x,y)
 
     elif plane == 'xz':
         pass
     elif plane == 'yz':
         pass
 
-def goodAngle(points,x,y):
+def badAngle(points,x,y):
     index = ([i for i in range(len(points)) if points[i] == (x,y)])[0]
-    return not (points[index][1] - points[index-1][1]) == (points[index][1] - points[(index+1)%len(points)][1])
+    return (points[index][1] - points[index-1][1]) == (points[index][1] - points[(index+1)%len(points)][1])
 
 
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
