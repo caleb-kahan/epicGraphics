@@ -6,56 +6,54 @@ def add_extrusion(tmp, name, length, symbols):
     shape = symbols[name]
     points = shape[1]['points']
     generator = generate_extrusion(name, length, symbols)
-    for i in range(length-1):
-        for j in range(len(points)):
-            start = i * len(points) + j
-            if j != 0:
-                add_polygon( tmp,
-                             generator[start][0],
-                             generator[start][1],
-                             generator[start][2],
-                             generator[start-1][0],
-                             generator[start-1][1],
-                             generator[start-1][2],
-                             generator[(start-1)+len(points)][0],
-                             generator[(start-1)+len(points)][1],
-                             generator[(start-1)+len(points)][2])
-                # print(start, start-1, (start-1)+len(points))
-                add_polygon( tmp,
-                             generator[start][0],
-                             generator[start][1],
-                             generator[start][2],
-                             generator[(start-1)+len(points)][0],
-                             generator[(start-1)+len(points)][1],
-                             generator[(start-1)+len(points)][2],
-                             generator[start+len(points)][0],
-                             generator[start+len(points)][1],
-                             generator[start+len(points)][2])
-                # print(start, (start-1)+len(points), start+len(points))
-            else:
-                add_polygon( tmp,
-                             generator[start][0],
-                             generator[start][1],
-                             generator[start][2],
-                             generator[(start+len(points))-1][0],
-                             generator[(start+len(points))-1][1],
-                             generator[(start+len(points))-1][2],
-                             generator[((start+len(points))-1)+len(points)][0],
-                             generator[((start+len(points))-1)+len(points)][1],
-                             generator[((start+len(points))-1)+len(points)][2])
-                # print(start, (start+len(points))-1, ((start+len(points))-1)+len(points))
-                add_polygon( tmp,
-                             generator[start][0],
-                             generator[start][1],
-                             generator[start][2],
-                             generator[((start+len(points))-1)+len(points)][0],
-                             generator[((start+len(points))-1)+len(points)][1],
-                             generator[((start+len(points))-1)+len(points)][2],
-                             generator[start+len(points)][0],
-                             generator[start+len(points)][1],
-                             generator[start+len(points)][2])
-                # print(start, ((start+len(points))-1)+len(points), start+len(points))
-
+    for j in range(len(points)):
+        start = j
+        if j == 0:
+            add_polygon( tmp,
+                         generator[start][0],
+                         generator[start][1],
+                         generator[start][2],
+                         generator[(start+len(points))-1][0],
+                         generator[(start+len(points))-1][1],
+                         generator[(start+len(points))-1][2],
+                         generator[((start+len(points))-1)+len(points)][0],
+                         generator[((start+len(points))-1)+len(points)][1],
+                         generator[((start+len(points))-1)+len(points)][2])
+            # print(start, (start+len(points))-1, ((start+len(points))-1)+len(points))
+            add_polygon( tmp,
+                         generator[start][0],
+                         generator[start][1],
+                         generator[start][2],
+                         generator[((start+len(points))-1)+len(points)][0],
+                         generator[((start+len(points))-1)+len(points)][1],
+                         generator[((start+len(points))-1)+len(points)][2],
+                         generator[start+len(points)][0],
+                         generator[start+len(points)][1],
+                         generator[start+len(points)][2])
+            # print(start, ((start+len(points))-1)+len(points), start+len(points))
+        else:
+            add_polygon( tmp,
+                         generator[start][0],
+                         generator[start][1],
+                         generator[start][2],
+                         generator[start-1][0],
+                         generator[start-1][1],
+                         generator[start-1][2],
+                         generator[(start-1)+len(points)][0],
+                         generator[(start-1)+len(points)][1],
+                         generator[(start-1)+len(points)][2])
+            # print(start, start-1, (start-1)+len(points))
+            add_polygon( tmp,
+                         generator[start][0],
+                         generator[start][1],
+                         generator[start][2],
+                         generator[(start-1)+len(points)][0],
+                         generator[(start-1)+len(points)][1],
+                         generator[(start-1)+len(points)][2],
+                         generator[start+len(points)][0],
+                         generator[start+len(points)][1],
+                         generator[start+len(points)][2])
+            # print(start, (start-1)+len(points), start+len(points))
 
 
 def generate_extrusion(name, length, symbols):
@@ -66,22 +64,18 @@ def generate_extrusion(name, length, symbols):
     if length == 0:
         print('Need at least one thickness to proceed')
         return
-    elif length > 0:
-        neg = 1
-    else:
-        neg = -1
-    for i in range(abs(length)):
+    for i in [0, abs(length)-1]:
         for j in range(len(points)):
             if plane == 'xy':
                 x = points[j][0]
                 y = points[j][1]
-                z = neg * i
+                z = i
             elif plane == 'xz':
                 x = points[j][0]
-                y = neg * i
+                y = i
                 z = points[j][1]
             elif plane == 'yz':
-                x = neg * i
+                x = i
                 y = points[j][0]
                 z = points[j][1]
             generator.append( [x, y, z] )
