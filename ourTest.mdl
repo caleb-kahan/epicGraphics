@@ -9,5 +9,5 @@ rotate z 30
 shape caleb xy [(100,20),(120,60),(160,80),(120,100),(100,140),(80,100),(40,80),(80,60)] 255 0 0
 drawshape caleb
 extrusion caleb shiny_purple 60
-//display
+display
 save caleb.png

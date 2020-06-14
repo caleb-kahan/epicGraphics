@@ -120,7 +120,7 @@ def fill_points(tmp, name, symbols):
     zMin = min(zCor)
     zMax = max(zCor)
     if plane == 'xy':
-        for i in range(0,len(tmp),2):
+        for i in range(0,len(tmp)):
             for badPoint in badPoints:
                 #print(i,j)
                 if math.sqrt(math.pow(tmp[i][0]-badPoint[0],2)+math.pow(tmp[i][1]-badPoint[1],2))<2:
@@ -141,13 +141,39 @@ def fill_points(tmp, name, symbols):
                     completion = True
                     if status:
                         tmp.append([x,y,0,1])
-                        tmp.append([x,y,0,1])
                         #print(x,y)
-
     elif plane == 'xz':
         pass
     elif plane == 'yz':
         pass
+
+def findTranslationArguments(name,symbols,length):
+    shape = symbols[name]
+    plane = shape[1]['plane']
+    if plane == "xy":
+        return (0,0,length)
+    if plane == "yz":
+        return (length,0,0)
+    if plane == "xz":
+        return (0,length,0)
+
+def modifyBorder(border,plane):
+    newBorder = []
+    for i in range(len(border)):
+        if plane == 'xy':
+            x = border[i][0]
+            y = border[i][1]
+            z = 0
+        elif plane == 'xz':
+            x = border[i][0]
+            y = 0
+            z = border[i][1]
+        elif plane == 'yz':
+            x = 0
+            y = border[i][0]
+            z = border[i][1]
+        newBorder.append([x,y,z,1])
+    return newBorder
 
 def badAngle(points,x,y):
     index = ([i for i in range(len(points)) if points[i] == (x,y)])[0]
@@ -243,29 +269,36 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
 
             color = get_lighting(normal, view, ambient, light, symbols, reflect )
             scanline_convert(polygons, point, screen, zbuffer, color)
-
-            # draw_line( int(polygons[point][0]),
-            #            int(polygons[point][1]),
-            #            polygons[point][2],
-            #            int(polygons[point+1][0]),
-            #            int(polygons[point+1][1]),
-            #            polygons[point+1][2],
-            #            screen, zbuffer, color)
-            # draw_line( int(polygons[point+2][0]),
-            #            int(polygons[point+2][1]),
-            #            polygons[point+2][2],
-            #            int(polygons[point+1][0]),
-            #            int(polygons[point+1][1]),
-            #            polygons[point+1][2],
-            #            screen, zbuffer, color)
-            # draw_line( int(polygons[point][0]),
-            #            int(polygons[point][1]),
-            #            polygons[point][2],
-            #            int(polygons[point+2][0]),
-            #            int(polygons[point+2][1]),
-            #            polygons[point+2][2],
-            #            screen, zbuffer, color)
         point+= 3
+
+def draw_surface(surface, screen, zbuffer, view, ambient, light, symbols, reflect, border):
+    #Any combination of points works
+    p1 = [border[2][0],border[2][1],border[2][2]]
+    p2 = [border[3][0],border[3][1],border[3][2]]
+    p3 = [border[4][0],border[4][1],border[4][2]]
+
+    polygons = [p1,p2,p3]
+
+    if calculate_normal(polygons,0)[:][2] > 0:
+        polygons = [p1,p2,p3]
+    elif calculate_normal(polygons,0)[:][2] < 0:
+        polygons = [p1,p3,p2]
+    elif calculate_normal(polygons,0)[:][2] < 0:
+        polygons = [p2,p1,p3]
+    elif calculate_normal(polygons,0)[:][2] < 0:
+        polygons = [p2,p3,p1]
+    elif calculate_normal(polygons,0)[:][2] < 0:
+        polygons = [p3,p1,p2]
+    elif calculate_normal(polygons,0)[:][2] < 0:
+        polygons = [p3,p2,p1]
+
+    normal = calculate_normal(polygons, 0)[:]
+
+        #color = get_lighting(normal, view, ambient, light, symbols, reflect )
+    color = get_lighting(normal, view, ambient, light, symbols, reflect )
+    for i in range(len(surface)):
+        #print(surface[i])
+        plot(screen,zbuffer,color,int(surface[i][0]),int(surface[i][1]),int(surface[i][2]))
 
 
 def add_box( polygons, x, y, z, width, height, depth ):
@@ -538,7 +571,6 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color, addition, tmp):
     while ( loop_start < loop_end ):
         if addition:
             tmp.append([x,y,z,1])
-            tmp.append([x,y,z,1])
         else:
             plot( screen, zbuffer, color, x, y, z )
         if ( (wide and ((A > 0 and d > 0) or (A < 0 and d < 0))) or
@@ -554,7 +586,6 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color, addition, tmp):
         z+= dz
         loop_start+= 1
     if addition:
-        tmp.append([x,y,z,1])
         tmp.append([x,y,z,1])
     else:
         plot( screen, zbuffer, color, x, y, z )

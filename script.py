@@ -139,6 +139,7 @@ def run(filename):
         screen = new_screen()
         zbuffer = new_zbuffer()
         tmp = []
+        basePoints = []
         step_3d = 100
         consts = ''
         coords = []
@@ -192,26 +193,40 @@ def run(filename):
                 matrix_mult( stack[-1], tmp )
                 draw_lines(tmp, screen, zbuffer, color)
                 tmp = []
-            elif c == 'drawshape':
-                shapeName = command['name']
-                add_shape(tmp, shapeName, symbols)
-                fill_points(tmp,shapeName,symbols)
-                matrix_mult( stack[-1], tmp )
-                shape = symbols[shapeName]
-                color = shape[1]['color']
-                color[0] = int(color[0])
-                color[1] = int(color[1])
-                color[2] = int(color[2])
-                draw_lines(tmp, screen, zbuffer, color)
-                tmp = []
             elif c == 'extrusion':
                 shapeName = command['name']
+                shape = symbols[shapeName]
+                baseBorder = shape[1]['points']
+                plane = shape[1]['plane']
+                baseBorder = modifyBorder(baseBorder,plane)
+                elevatedBorder = [point[:] for point in baseBorder]
                 # reflect = command['constants']
                 length = int(command['args'])
+                # Here we are ammasing the points and fill of the 2-d shapes
+                add_shape(basePoints, shapeName, symbols)
+                fill_points(basePoints,shapeName,symbols)
+                elevatedPoints = [point[:] for point in basePoints]
+                #Here we adding the extrusion points
                 add_extrusion(tmp, shapeName, length, symbols)
                 matrix_mult( stack[-1], tmp )
-                # print(tmp)
+                matrix_mult( stack[-1], basePoints)
+                matrix_mult(stack[-1], baseBorder)
+                # Now we are changing the matrix to extrude those points
+                # Here we are finding for the extrusion
+                x,y,z = findTranslationArguments(shapeName,symbols,length)
+                translate_matrix = make_translate(x,y,z)
+                matrix_mult(stack[-1], translate_matrix)
+                stack[-1] = [x[:] for x in tmp]
+                #Here, we are updating the elevatedPoints/border location now to be "elevated"
+                matrix_mult( stack[-1], elevatedPoints)
+                matrix_mult(stack[-1], elevatedBorder)
+                #Drawing the main body of the 3-d shape
                 draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
+                #Drawing the top and bottom surface of the shape
+                draw_surface(basePoints,screen,zbuffer,view,ambient,light,symbols,reflect,baseBorder)
+                draw_surface(elevatedPoints,screen,zbuffer,view,ambient,light,symbols,reflect,elevatedBorder)
+                basePoints = []
+                elevatedPoints = []
                 tmp = []
                 reflect = '.white'
             elif c == 'move':
