@@ -195,6 +195,8 @@ def run(filename):
                 tmp = []
             elif c == 'extrusion':
                 shapeName = command['name']
+                if command['constants']:
+                    reflect = command['constants']
                 shape = symbols[shapeName]
                 baseBorder = shape[1]['points']
                 plane = shape[1]['plane']
@@ -228,7 +230,56 @@ def run(filename):
                 basePoints = []
                 elevatedPoints = []
                 tmp = []
-                reflect = '.white'
+            elif c == 'revolution':
+                shapeName = command['name']
+                if command['constants']:
+                    reflect = command['constants']
+                axis = args[0]
+                translation = args[1]
+                #Some funcitonal programming here
+                if axis == 'x':
+                    function = make_rotX
+                elif args[0] == 'y':
+                    function = make_rotY
+                else:
+                    function = make_rotZ
+                shape = symbols[shapeName]
+                plane = shape[1]['plane']
+                border = shape[1]['points']
+                origBorder = modifyBorder(border,plane)
+                #Here We have the translatable functions
+                #translate_matrix = make_translate(250,250,0)
+                #matrix_mult(stack[-1], translate_matrix)
+                #stack[-1] = [x[:] for x in translate_matrix]
+                #Here we're pushignt the stack
+                stack.append([x[:] for x in stack[-1]] )
+
+
+                steps = 360
+                for i in range(steps):
+                    border1 = [point[:] for point in origBorder]
+                    border2 = [point[:] for point in origBorder]
+                    theta1 = 360/steps * math.pi/180 * (i)
+                    theta2 = 360/steps * math.pi/180 * (i+1)
+                    rotationMatrix1 = function(theta1)
+                    rotationMatrix2 = function(theta2)
+                    #New Stack with rotation1
+                    matrix_mult(stack[-1],rotationMatrix1)
+                    stack[-1] = [ x[:] for x in rotationMatrix1]
+                    matrix_mult(stack[-1],border1)
+                    stack.pop()
+                    stack.append([x[:] for x in stack[-1]] )
+                    #New Stack with Rotation 2
+                    matrix_mult(stack[-1],rotationMatrix2)
+                    stack[-1] = [ x[:] for x in rotationMatrix2]
+                    matrix_mult(stack[-1],border2)
+                    stack.pop()
+                    stack.append([x[:] for x in stack[-1]] )
+                    #Stack starts all over again
+                    add_rotation(border1,border2, tmp)
+                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
+
+
             elif c == 'move':
                 if command['knob']:
                     knob_value = symbols[command['knob']][1]
