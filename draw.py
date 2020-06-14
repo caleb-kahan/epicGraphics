@@ -55,6 +55,7 @@ def add_extrusion(tmp, name, length, symbols):
                          generator[start+len(points)][2])
             # print(start, (start-1)+len(points), start+len(points))
 
+
 def generate_extrusion(name, length, symbols):
     shape = symbols[name]
     generator = []
