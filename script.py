@@ -195,7 +195,7 @@ def run(filename):
             elif c == 'drawshape':
                 shapeName = command['name']
                 add_shape(tmp, shapeName, symbols)
-                fill_shape(tmp,name,symbols)
+                fill_points(tmp,shapeName,symbols)
                 matrix_mult( stack[-1], tmp )
                 shape = symbols[shapeName]
                 color = shape[1]['color']
