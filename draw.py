@@ -2,6 +2,7 @@ from display import *
 from matrix import *
 from gmath import *
 
+
 def add_extrusion(tmp, name, length, symbols):
     shape = symbols[name]
     points = shape[1]['points']

@@ -254,6 +254,11 @@ def p_command_extrusion(p):
     cmd = {'op' : p[1], 'name' : p[2], 'constants' : p[3], 'cs' : None, 'args': p[4]}
     commands.append(cmd)
 
+def p_command_revolution(p):
+    """command: REVOLUTION SYMBOL SYMBOL XYZ NUMBER"""
+    cmd = {'op': p[1], 'name' : p[2], 'constants' : p[3], 'cs' : None, 'args' : p[4:6]}
+    commands.append(cmd)
+
 def p_command_line(p):
     """command : LINE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
                | LINE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL
