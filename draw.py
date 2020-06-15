@@ -107,28 +107,58 @@ def add_shape(tmp, name, symbols):
 def add_rotation(border1,border2,polygons):
     length = len(border1)
     for i in range(length):
-        if border1[(i+1)%length] != border2[(i+1)%length]:
-            add_polygon(polygons,
-                        border1[i][0],
-                        border1[i][1],
-                        border1[i][2],
-                        border1[(i+1)%length][0],
-                        border1[(i+1)%length][1],
-                        border1[(i+1)%length][2],
-                        border2[(i+1)%length][0],
-                        border2[(i+1)%length][1],
-                        border2[(i+1)%length][2])
-        if border1[(i)%length] != border2[(i)%length]:
-            add_polygon(polygons,
-                        border1[i][0],
-                        border1[i][1],
-                        border1[i][2],
+        if i == length -1:
+                add_polygon(polygons,
                         border2[(i+1)%length][0],
                         border2[(i+1)%length][1],
                         border2[(i+1)%length][2],
+                        border1[(i+1)%length][0],
+                        border1[(i+1)%length][1],
+                        border1[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2])
+
+                add_polygon(polygons,
                         border2[i][0],
                         border2[i][1],
-                        border2[i][2])
+                        border2[i][2],
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2])
+
+
+
+        else:
+            if border1[(i+1)%length] != border2[(i+1)%length]:
+                add_polygon(polygons,
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[(i+1)%length][0],
+                        border1[(i+1)%length][1],
+                        border1[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2]
+
+                        )
+
+            if border1[i] != border2[i]:
+                add_polygon(polygons,
+                        border2[i][0],
+                        border2[i][1],
+                        border2[i][2],
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2])
+
 
 
 def fill_points(tmp, name, symbols):
@@ -276,11 +306,18 @@ def scanline_convert(polygons, i, screen, zbuffer, color):
         y+= 1
 
 
+def find_polygon(polygons,x0,y0,z0,x1,y1,z1,x2,y2,z2):
+    for i in range(0,len(polygons),3):
+        triangle = polygons[i:i+3]
+        if [x0,y0,z0,1] in triangle and [x1,y1,z1,1] in triangle and [x2,y2,z2,1] in triangle:
+            return False
+    return True
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
-    add_point(polygons, x0, y0, z0)
-    add_point(polygons, x1, y1, z1)
-    add_point(polygons, x2, y2, z2)
+    if find_polygon(polygons,x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
+        add_point(polygons, x0, y0, z0)
+        add_point(polygons, x1, y1, z1)
+        add_point(polygons, x2, y2, z2)
 
 def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect):
     if len(polygons) < 2:
@@ -291,10 +328,8 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
     while point < len(polygons) - 2:
 
         normal = calculate_normal(polygons, point)[:]
-
         #print normal
         if normal[2] > 0:
-
             color = get_lighting(normal, view, ambient, light, symbols, reflect )
             scanline_convert(polygons, point, screen, zbuffer, color)
         point+= 3
