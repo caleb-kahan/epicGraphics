@@ -218,7 +218,7 @@ def run(filename):
                 x,y,z = findTranslationArguments(shapeName,symbols,length)
                 translate_matrix = make_translate(x,y,z)
                 matrix_mult(stack[-1], translate_matrix)
-                stack[-1] = [x[:] for x in tmp]
+                stack[-1] = [x[:] for x in translate_matrix]
                 #Here, we are updating the elevatedPoints/border location now to be "elevated"
                 matrix_mult( stack[-1], elevatedPoints)
                 matrix_mult(stack[-1], elevatedBorder)

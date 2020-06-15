@@ -2,8 +2,8 @@ constants white 0.2 0.5 0.5 0.2 0.5 0.5 0.2 0.5 0.5
 shape eric xy [(50,0),(25,43),(-25,43),(-50,0),(-25,-43),(25,-43)] 255 0 0
 push
 move 130 197 0
-//rotate x 345
-//rotate y 40
+rotate x 345
+rotate y 40
 extrusion eric white 150
 pop
 push
