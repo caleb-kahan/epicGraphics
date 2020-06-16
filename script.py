@@ -195,40 +195,11 @@ def run(filename):
                 tmp = []
             elif c == 'extrusion':
                 shapeName = command['name']
-                if command['constants']:
-                    reflect = command['constants']
-                shape = symbols[shapeName]
-                baseBorder = shape[1]['points']
-                plane = shape[1]['plane']
-                baseBorder = modifyBorder(baseBorder,plane)
-                elevatedBorder = [point[:] for point in baseBorder]
-                # reflect = command['constants']
-                length = int(command['args'])
-                # Here we are ammasing the points and fill of the 2-d shapes
-                add_shape(basePoints, shapeName, symbols)
-                fill_points(basePoints,shapeName,symbols)
-                elevatedPoints = [point[:] for point in basePoints]
-                #Here we adding the extrusion points
+                reflect = command['constants']
+                length = command['args']
                 add_extrusion(tmp, shapeName, length, symbols)
                 matrix_mult( stack[-1], tmp )
-                matrix_mult( stack[-1], basePoints)
-                matrix_mult(stack[-1], baseBorder)
-                # Now we are changing the matrix to extrude those points
-                # Here we are finding for the extrusion
-                x,y,z = findTranslationArguments(shapeName,symbols,length)
-                translate_matrix = make_translate(x,y,z)
-                matrix_mult(stack[-1], translate_matrix)
-                stack[-1] = [x[:] for x in translate_matrix]
-                #Here, we are updating the elevatedPoints/border location now to be "elevated"
-                matrix_mult( stack[-1], elevatedPoints)
-                matrix_mult(stack[-1], elevatedBorder)
-                #Drawing the main body of the 3-d shape
                 draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
-                #Drawing the top and bottom surface of the shape
-                draw_surface(basePoints,screen,zbuffer,view,ambient,light,symbols,reflect,baseBorder)
-                draw_surface(elevatedPoints,screen,zbuffer,view,ambient,light,symbols,reflect,elevatedBorder)
-                basePoints = []
-                elevatedPoints = []
                 tmp = []
             elif c == 'revolution':
                 shapeName = command['name']
