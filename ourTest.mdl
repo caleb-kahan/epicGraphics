@@ -11,7 +11,7 @@ rotate z 14
 shape caleb xy [(-50,0),(50,0),(50,100),(-50,100)] 255 0 0
 //shape caleb xy [(50,50),(100,50),(100,100),(50,100)] 255 0 0
 //drawshape caleb
-//extrusion caleb shiny_purple 60
-revolution caleb shiny_purple y 30
+//extrusion caleb shiny_purple 1
+revolution caleb shiny_purple x 200
 display
 save caleb.png

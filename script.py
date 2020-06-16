@@ -239,22 +239,23 @@ def run(filename):
                 #Some funcitonal programming here
                 if axis == 'x':
                     function = make_rotX
-                    #translate_matrix = make_translate(0,-translation,0)
-                    #translate_matrix_reverse = make_translate(0,translation,0)
+                    translate_matrix = make_translate(0,-translation,0)
+                    translate_matrix_reverse = make_translate(0,translation,0)
                 elif axis == 'y':
                     function = make_rotY
-                    #translate_matrix = make_translate(-translation,0,0)
-                    #translate_matrix_reverse = make_translate(translation,0,0)
+                    translate_matrix = make_translate(-translation,0,0)
+                    translate_matrix_reverse = make_translate(translation,0,0)
                 else:
                     function = make_rotZ
-                    #translate_matrix = make_translate(0,0,0)
-                    #translate_matrix_reverse = make_translate(0,0,0)
+                    translate_matrix = make_translate(0,0,0)
+                    translate_matrix_reverse = make_translate(0,0,0)
 
 
                 shape = symbols[shapeName]
                 plane = shape[1]['plane']
                 border = shape[1]['points']
                 origBorder = modifyBorder(border,plane)
+                matrix_mult(translate_matrix,origBorder)
 
                 #Here we're pushignt the stack
                 stack.append([x[:] for x in stack[-1]] )
@@ -267,8 +268,8 @@ def run(filename):
                     theta2 = 360/steps * math.pi/180 * (i+1)
                     rotationMatrix1 = function(theta1)
                     rotationMatrix2 = function(theta2)
-                    #translate_matrix_copy = [row[:] for row in translate_matrix]
-                    #translate_matrix_reverse_copy = [row[:] for row in translate_matrix_reverse]
+                    translate_matrix_copy = [row[:] for row in translate_matrix]
+                    translate_matrix_reverse_copy = [row[:] for row in translate_matrix_reverse]
 
                     #New Stack with rotation1
                     #matrix_mult(stack[-1], translate_matrix_copy)
@@ -279,11 +280,13 @@ def run(filename):
                     #stack[-1] = [ x[:] for x in translate_matrix_reverse_copy]
 
                     matrix_mult(stack[-1],border1)
-                    print(border1)
                     stack.pop()
                     stack.append([x[:] for x in stack[-1]] )
-                    #New Stack with Rotation 2
 
+                    translate_matrix_copy = [row[:] for row in translate_matrix]
+                    translate_matrix_reverse_copy = [row[:] for row in translate_matrix_reverse]
+
+                    #New Stack with Rotation 2
                     #matrix_mult(stack[-1], translate_matrix_copy)
                     #stack[-1] = [x[:] for x in translate_matrix_copy]
                     matrix_mult(stack[-1],rotationMatrix2)
