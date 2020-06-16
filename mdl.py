@@ -116,7 +116,7 @@ def t_DOUBLE(t):
     return t
 
 def t_LIST_TUPLES(t):
-    r"\[\(\d+,\d+\)(,\s*\(\d+,\d+\))*\]"
+    r"\[\(-?\d+,-?\d+\)(,\s*\(-?\d+,-?\d+\))*\]"
     t.value.replace(" ", "")
     t.value = eval(t.value)
     return t
@@ -252,6 +252,11 @@ def p_command_drawshape(p):
 def p_command_extrusion(p):
     """command : EXTRUSION SYMBOL SYMBOL NUMBER"""
     cmd = {'op' : p[1], 'name' : p[2], 'constants' : p[3], 'cs' : None, 'args': p[4]}
+    commands.append(cmd)
+
+def p_command_revolution(p):
+    """command : REVOLUTION SYMBOL SYMBOL XYZ NUMBER"""
+    cmd = {'op': p[1], 'name' : p[2], 'constants' : p[3], 'cs' : None, 'args' : p[4:6]}
     commands.append(cmd)
 
 def p_command_line(p):

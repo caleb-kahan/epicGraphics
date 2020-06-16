@@ -20,6 +20,60 @@ LOCATION = 0
 COLOR = 1
 SPECULAR_EXP = 4
 
+import math
+
+def make_ccw(triangle):
+    if not counter_clockwise(triangle[0], triangle[1], triangle[2]):
+        triangle = [triangle[0], triangle[2], triangle[1]]
+    return triangle
+
+def make_cw(triangle):
+    if counter_clockwise(triangle[0], triangle[1], triangle[2]):
+        triangle = [triangle[0], triangle[2], triangle[1]]
+    return triangle
+
+def counter_clockwise(p1, p2, p3):
+    x_1, y_1 = p1[0], p1[1]
+    x_2, y_2 = p2[0], p2[1]
+    x_3, y_3 = p3[0], p3[1]
+    val = (y_2 - y_1) * (x_3 - x_2) - (y_3 - y_2) * (x_2 - x_1)
+
+    return val <= 0
+
+def find_ear(pointlist):
+  # This algorithm is based off the Two Ears Theorem.
+  # Every simple polygon with 4 or more sides has at least two non-overlapping ears.
+  i = 0
+  while True:
+    if convex(pointlist, i):
+      if not concave(pointlist, i):
+        break
+    else:
+      i += 1
+  return i
+
+def convex(pointlist, i):
+    return find_angle(pointlist, i-1, i, (i+1) % len(pointlist)) < 180
+
+def concave(pointlist, i):
+    angle_1 = find_angle(pointlist, i-1, i, (i+1) % len(pointlist))
+    angle_2 = find_angle(pointlist, i, (i+1) % len(pointlist), i-1)
+    angle_3 = find_angle(pointlist, (i+1) % len(pointlist), i-1, i)
+    return angle_1 >= 180 or angle_2 >= 180 or angle_3 >= 180
+
+def find_angle(pointlist, a, b, c):
+    a_0, a_1 = pointlist[a][0], pointlist[a][1]
+    b_0, b_1 = pointlist[b][0], pointlist[b][1]
+    c_0, c_1 = pointlist[c][0], pointlist[c][1]
+    BA = (a_0-b_0, a_1-b_1)
+    BC = (c_0-b_0, c_1-b_1)
+    cosine_of_angle = (BA[0]*BC[0] + BA[1]*BC[1]) / (find_magnitude(BA) * find_magnitude(BC))
+    angle = math.acos(cosine_of_angle)
+    return math.degrees(angle)
+
+def find_magnitude(vector):
+  return math.sqrt(vector[0]**2 + vector[1]**2)
+
 #lighting functions
 def get_lighting(normal, view, ambient, light, symbols, reflect ):
 

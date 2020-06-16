@@ -2,57 +2,84 @@ from display import *
 from matrix import *
 from gmath import *
 
-def add_extrusion(tmp, name, length, symbols):
+def add_extrusion(polygons, name, length, symbols):
+    # Shapes/lids
+    break_shape(name, symbols, polygons, 0)
+    break_shape(name, symbols, polygons, length-1)
+    for i in polygons:
+        print(i[0], i[1], i[2])
+    # Actual extrusion
     shape = symbols[name]
     points = shape[1]['points']
     generator = generate_extrusion(name, length, symbols)
     for j in range(len(points)):
         start = j
         if j == 0:
-            add_polygon( tmp,
-                         generator[start][0],
-                         generator[start][1],
-                         generator[start][2],
-                         generator[(start+len(points))-1][0],
-                         generator[(start+len(points))-1][1],
-                         generator[(start+len(points))-1][2],
-                         generator[((start+len(points))-1)+len(points)][0],
-                         generator[((start+len(points))-1)+len(points)][1],
-                         generator[((start+len(points))-1)+len(points)][2])
+            triangle1 = [generator[start],
+                         generator[(start+len(points))-1],
+                         generator[((start+len(points))-1)+len(points)]
+                        ]
+            triangle2 = [generator[start],
+                         generator[((start+len(points))-1)+len(points)],
+                         generator[start+len(points)]
+                        ]
+            triangle1 = make_cw(triangle1)
+            triangle2 = make_cw(triangle2)
+
+            add_polygon( polygons,
+                         triangle1[0][0],
+                         triangle1[0][1],
+                         triangle1[0][2],
+                         triangle1[1][0],
+                         triangle1[1][1],
+                         triangle1[1][2],
+                         triangle1[2][0],
+                         triangle1[2][1],
+                         triangle1[2][2])
+
             # print(start, (start+len(points))-1, ((start+len(points))-1)+len(points))
-            add_polygon( tmp,
-                         generator[start][0],
-                         generator[start][1],
-                         generator[start][2],
-                         generator[((start+len(points))-1)+len(points)][0],
-                         generator[((start+len(points))-1)+len(points)][1],
-                         generator[((start+len(points))-1)+len(points)][2],
-                         generator[start+len(points)][0],
-                         generator[start+len(points)][1],
-                         generator[start+len(points)][2])
+            add_polygon( polygons,
+                         triangle2[0][0],
+                         triangle2[0][1],
+                         triangle2[0][2],
+                         triangle2[1][0],
+                         triangle2[1][1],
+                         triangle2[1][2],
+                         triangle2[2][0],
+                         triangle2[2][1],
+                         triangle2[2][2])
             # print(start, ((start+len(points))-1)+len(points), start+len(points))
         else:
-            add_polygon( tmp,
-                         generator[start][0],
-                         generator[start][1],
-                         generator[start][2],
-                         generator[start-1][0],
-                         generator[start-1][1],
-                         generator[start-1][2],
-                         generator[(start-1)+len(points)][0],
-                         generator[(start-1)+len(points)][1],
-                         generator[(start-1)+len(points)][2])
+            triangle1 = [generator[start],
+                         generator[start-1],
+                         generator[(start-1)+len(points)]
+                        ]
+            triangle2 = [generator[start],
+                         generator[(start-1)+len(points)],
+                         generator[start+len(points)]]
+            triangle1 = make_cw(triangle1)
+            triangle2 = make_ccw(triangle2)
+            add_polygon( polygons,
+                         triangle1[0][0],
+                         triangle1[0][1],
+                         triangle1[0][2],
+                         triangle1[1][0],
+                         triangle1[1][1],
+                         triangle1[1][2],
+                         triangle1[2][0],
+                         triangle1[2][1],
+                         triangle1[2][2])
             # print(start, start-1, (start-1)+len(points))
-            add_polygon( tmp,
-                         generator[start][0],
-                         generator[start][1],
-                         generator[start][2],
-                         generator[(start-1)+len(points)][0],
-                         generator[(start-1)+len(points)][1],
-                         generator[(start-1)+len(points)][2],
-                         generator[start+len(points)][0],
-                         generator[start+len(points)][1],
-                         generator[start+len(points)][2])
+            add_polygon( polygons,
+                         triangle2[0][0],
+                         triangle2[0][1],
+                         triangle2[0][2],
+                         triangle2[1][0],
+                         triangle2[1][1],
+                         triangle2[1][2],
+                         triangle2[2][0],
+                         triangle2[2][1],
+                         triangle2[2][2])
             # print(start, (start-1)+len(points), start+len(points))
 
 
@@ -81,6 +108,74 @@ def generate_extrusion(name, length, symbols):
             generator.append( [x, y, z] )
     return generator
 
+def break_shape(name, symbols, polygons, other_coordinate):
+    shape = symbols[name]
+    plane = shape[1]['plane']
+    points = shape[1]['points']
+    copy_points = [point[:] for point in points]
+    while len(copy_points) > 2:
+        i = find_ear(copy_points)
+        p1 = copy_points[i-1]
+        p2 = copy_points[i]
+        p3 = copy_points[(i+1) % len(copy_points)]
+        triangle = [p1, p2, p3]
+        triangle = make_ccw(triangle)
+        if plane == 'xy':
+            add_polygon(polygons,
+                        triangle[0][0],
+                        triangle[0][1],
+                        other_coordinate,
+                        triangle[1][0],
+                        triangle[1][1],
+                        other_coordinate,
+                        triangle[2][0],
+                        triangle[2][1],
+                        other_coordinate)
+        elif plane == 'xz':
+            add_polygon(polygons,
+                        triangle[0][0],
+                        other_coordinate,
+                        triangle[0][1],
+                        triangle[1][0],
+                        other_coordinate,
+                        triangle[1][1],
+                        triangle[2][0],
+                        other_coordinate,
+                        triangle[2][1])
+        elif plane == 'yz':
+            add_polygon(polygons,
+                        other_coordinate,
+                        triangle[0][0],
+                        triangle[0][1],
+                        other_coordinate,
+                        triangle[0][0],
+                        triangle[0][1],
+                        other_coordinate,
+                        triangle[0][0],
+                        triangle[0][1])
+        else:
+            print("Error: Invalid plane.")
+            break
+        copy_points.pop(i)
+
+def modifyBorder(border,plane):
+    newBorder = []
+    for i in range(len(border)):
+        if plane == 'xy':
+            x = border[i][0]
+            y = border[i][1]
+            z = 0
+        elif plane == 'xz':
+            x = border[i][0]
+            y = 0
+            z = border[i][1]
+        elif plane == 'yz':
+            x = 0
+            y = border[i][0]
+            z = border[i][1]
+        newBorder.append([x,y,z,1])
+    return newBorder
+
 def add_shape(tmp, name, symbols):
     shape = symbols[name]
     plane = shape[1]['plane']
@@ -103,6 +198,63 @@ def add_shape(tmp, name, symbols):
             z0,z1 = points[i-1][1],points[i][1]
         draw_line(int(x0),int(y0),int(z0),int(x1),int(y1),int(z1), None, None, None, True, tmp)
 
+def add_rotation(border1,border2,polygons):
+    length = len(border1)
+    for i in range(length):
+        if i == length -1:
+                add_polygon(polygons,
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[(i+1)%length][0],
+                        border1[(i+1)%length][1],
+                        border1[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2])
+
+                add_polygon(polygons,
+                        border2[i][0],
+                        border2[i][1],
+                        border2[i][2],
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2])
+
+
+
+        else:
+            if border1[(i+1)%length] != border2[(i+1)%length]:
+                add_polygon(polygons,
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[(i+1)%length][0],
+                        border1[(i+1)%length][1],
+                        border1[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2]
+
+                        )
+
+            if border1[i] != border2[i]:
+                add_polygon(polygons,
+                        border2[i][0],
+                        border2[i][1],
+                        border2[i][2],
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2])
+
+
+
 def fill_points(tmp, name, symbols):
     shape = symbols[name]
     plane = shape[1]['plane']
@@ -120,7 +272,7 @@ def fill_points(tmp, name, symbols):
     zMin = min(zCor)
     zMax = max(zCor)
     if plane == 'xy':
-        for i in range(0,len(tmp),2):
+        for i in range(0,len(tmp)):
             for badPoint in badPoints:
                 #print(i,j)
                 if math.sqrt(math.pow(tmp[i][0]-badPoint[0],2)+math.pow(tmp[i][1]-badPoint[1],2))<2:
@@ -141,13 +293,39 @@ def fill_points(tmp, name, symbols):
                     completion = True
                     if status:
                         tmp.append([x,y,0,1])
-                        tmp.append([x,y,0,1])
                         #print(x,y)
-
     elif plane == 'xz':
         pass
     elif plane == 'yz':
         pass
+
+def findTranslationArguments(name,symbols,length):
+    shape = symbols[name]
+    plane = shape[1]['plane']
+    if plane == "xy":
+        return (0,0,length)
+    if plane == "yz":
+        return (length,0,0)
+    if plane == "xz":
+        return (0,length,0)
+
+def modifyBorder(border,plane):
+    newBorder = []
+    for i in range(len(border)):
+        if plane == 'xy':
+            x = border[i][0]
+            y = border[i][1]
+            z = 0
+        elif plane == 'xz':
+            x = border[i][0]
+            y = 0
+            z = border[i][1]
+        elif plane == 'yz':
+            x = 0
+            y = border[i][0]
+            z = border[i][1]
+        newBorder.append([x,y,z,1])
+    return newBorder
 
 def badAngle(points,x,y):
     index = ([i for i in range(len(points)) if points[i] == (x,y)])[0]
@@ -222,11 +400,18 @@ def scanline_convert(polygons, i, screen, zbuffer, color):
         y+= 1
 
 
+def find_polygon(polygons,x0,y0,z0,x1,y1,z1,x2,y2,z2):
+    for i in range(0,len(polygons),3):
+        triangle = polygons[i:i+3]
+        if [x0,y0,z0,1] in triangle and [x1,y1,z1,1] in triangle and [x2,y2,z2,1] in triangle:
+            return False
+    return True
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
-    add_point(polygons, x0, y0, z0)
-    add_point(polygons, x1, y1, z1)
-    add_point(polygons, x2, y2, z2)
+    if find_polygon(polygons,x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
+        add_point(polygons, x0, y0, z0)
+        add_point(polygons, x1, y1, z1)
+        add_point(polygons, x2, y2, z2)
 
 def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect):
     if len(polygons) < 2:
@@ -237,35 +422,40 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
     while point < len(polygons) - 2:
 
         normal = calculate_normal(polygons, point)[:]
-
         #print normal
         if normal[2] > 0:
-
             color = get_lighting(normal, view, ambient, light, symbols, reflect )
             scanline_convert(polygons, point, screen, zbuffer, color)
-
-            # draw_line( int(polygons[point][0]),
-            #            int(polygons[point][1]),
-            #            polygons[point][2],
-            #            int(polygons[point+1][0]),
-            #            int(polygons[point+1][1]),
-            #            polygons[point+1][2],
-            #            screen, zbuffer, color)
-            # draw_line( int(polygons[point+2][0]),
-            #            int(polygons[point+2][1]),
-            #            polygons[point+2][2],
-            #            int(polygons[point+1][0]),
-            #            int(polygons[point+1][1]),
-            #            polygons[point+1][2],
-            #            screen, zbuffer, color)
-            # draw_line( int(polygons[point][0]),
-            #            int(polygons[point][1]),
-            #            polygons[point][2],
-            #            int(polygons[point+2][0]),
-            #            int(polygons[point+2][1]),
-            #            polygons[point+2][2],
-            #            screen, zbuffer, color)
         point+= 3
+
+def draw_surface(surface, screen, zbuffer, view, ambient, light, symbols, reflect, border):
+    #Any combination of points works
+    p1 = [border[2][0],border[2][1],border[2][2]]
+    p2 = [border[3][0],border[3][1],border[3][2]]
+    p3 = [border[4][0],border[4][1],border[4][2]]
+
+    polygons = [p1,p2,p3]
+
+    if calculate_normal(polygons,0)[:][2] > 0:
+        polygons = [p1,p2,p3]
+    elif calculate_normal(polygons,0)[:][2] < 0:
+        polygons = [p1,p3,p2]
+    elif calculate_normal(polygons,0)[:][2] < 0:
+        polygons = [p2,p1,p3]
+    elif calculate_normal(polygons,0)[:][2] < 0:
+        polygons = [p2,p3,p1]
+    elif calculate_normal(polygons,0)[:][2] < 0:
+        polygons = [p3,p1,p2]
+    elif calculate_normal(polygons,0)[:][2] < 0:
+        polygons = [p3,p2,p1]
+
+    normal = calculate_normal(polygons, 0)[:]
+
+        #color = get_lighting(normal, view, ambient, light, symbols, reflect )
+    color = get_lighting(normal, view, ambient, light, symbols, reflect )
+    for i in range(len(surface)):
+        #print(surface[i])
+        plot(screen,zbuffer,color,int(surface[i][0]),int(surface[i][1]),int(surface[i][2]))
 
 
 def add_box( polygons, x, y, z, width, height, depth ):
@@ -538,7 +728,6 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color, addition, tmp):
     while ( loop_start < loop_end ):
         if addition:
             tmp.append([x,y,z,1])
-            tmp.append([x,y,z,1])
         else:
             plot( screen, zbuffer, color, x, y, z )
         if ( (wide and ((A > 0 and d > 0) or (A < 0 and d < 0))) or
@@ -554,7 +743,6 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color, addition, tmp):
         z+= dz
         loop_start+= 1
     if addition:
-        tmp.append([x,y,z,1])
         tmp.append([x,y,z,1])
     else:
         plot( screen, zbuffer, color, x, y, z )

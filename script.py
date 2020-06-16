@@ -139,6 +139,7 @@ def run(filename):
         screen = new_screen()
         zbuffer = new_zbuffer()
         tmp = []
+        basePoints = []
         step_3d = 100
         consts = ''
         coords = []
@@ -192,28 +193,70 @@ def run(filename):
                 matrix_mult( stack[-1], tmp )
                 draw_lines(tmp, screen, zbuffer, color)
                 tmp = []
-            elif c == 'drawshape':
-                shapeName = command['name']
-                add_shape(tmp, shapeName, symbols)
-                fill_points(tmp,shapeName,symbols)
-                matrix_mult( stack[-1], tmp )
-                shape = symbols[shapeName]
-                color = shape[1]['color']
-                color[0] = int(color[0])
-                color[1] = int(color[1])
-                color[2] = int(color[2])
-                draw_lines(tmp, screen, zbuffer, color)
-                tmp = []
             elif c == 'extrusion':
                 shapeName = command['name']
-                # reflect = command['constants']
-                length = int(command['args'])
+                reflect = command['constants']
+                length = command['args']
                 add_extrusion(tmp, shapeName, length, symbols)
                 matrix_mult( stack[-1], tmp )
-                # print(tmp)
                 draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
                 tmp = []
-                reflect = '.white'
+            elif c == 'revolution':
+                shapeName = command['name']
+                if command['constants']:
+                    reflect = command['constants']
+                axis = args[0]
+                translation = args[1]
+                #Some funcitonal programming here
+                if axis == 'x':
+                    function = make_rotX
+                    translate_matrix = make_translate(0,-translation,0)
+                elif axis == 'y':
+                    function = make_rotY
+                    translate_matrix = make_translate(translation,0,0)
+                else:
+                    function = make_rotZ
+                    translate_matrix = make_translate(0,0,0)
+
+
+                shape = symbols[shapeName]
+                plane = shape[1]['plane']
+                border = shape[1]['points']
+                origBorder = modifyBorder(border,plane)
+                matrix_mult(translate_matrix,origBorder)
+
+                #Here we're pushignt the stack
+                stack.append([x[:] for x in stack[-1]] )
+
+                steps = 360
+                for i in range(steps):
+                    border1 = [point[:] for point in origBorder]
+                    border2 = [point[:] for point in origBorder]
+                    theta1 = 360/steps * math.pi/180 * (i)
+                    theta2 = 360/steps * math.pi/180 * (i+1)
+                    rotationMatrix1 = function(theta1)
+                    rotationMatrix2 = function(theta2)
+
+                    matrix_mult(stack[-1],rotationMatrix1)
+                    stack[-1] = [ x[:] for x in rotationMatrix1]
+
+                    matrix_mult(stack[-1],border1)
+                    stack.pop()
+                    stack.append([x[:] for x in stack[-1]] )
+
+                    matrix_mult(stack[-1],rotationMatrix2)
+                    stack[-1] = [ x[:] for x in rotationMatrix2]
+
+                    matrix_mult(stack[-1],border2)
+                    stack.pop()
+                    stack.append([x[:] for x in stack[-1]] )
+                    #Stack starts all over again
+                    add_rotation(border1,border2, tmp)
+                #print(stack[-1])
+                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
+                tmp = []
+
+
             elif c == 'move':
                 if command['knob']:
                     knob_value = symbols[command['knob']][1]
