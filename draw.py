@@ -10,49 +10,91 @@ def add_extrusion(polygons, name, length, symbols):
     shape = symbols[name]
     points = shape[1]['points']
     generator = generate_extrusion(name, length, symbols)
+
+    mainTriangle = [points[0],points[1],points[2]]
+    flip = False
+    if counter_clockwise(mainTriangle[0],mainTriangle[1],mainTriangle[2]):
+        flip = True
     for start in range(len(points)):
         if start == len(points) - 1:
+            triangle1 = [generator[start],
+                         generator[start+len(points)],
+                         generator[start+1]
+                        ]
+            triangle2 = [generator[start],
+                         generator[start+1],
+                         generator[0]
+                        ]
+            if flip:
+                tmp = triangle1[1][:]
+                triangle1[1] = triangle1[2][:]
+                triangle1[2] = tmp
+
+            if flip:
+                tmp = triangle2[1][:]
+                triangle2[1] = triangle2[2][:]
+                triangle2[2] = tmp
+
             add_polygon( polygons,
-                         generator[start][0],
-                         generator[start][1],
-                         generator[start][2],
-                         generator[start+len(points)][0],
-                         generator[start+len(points)][1],
-                         generator[start+len(points)][2],
-                         generator[start+1][0],
-                         generator[start+1][1],
-                         generator[start+1][2])
+                         triangle1[0][0],
+                         triangle1[0][1],
+                         triangle1[0][2],
+                         triangle1[1][0],
+                         triangle1[1][1],
+                         triangle1[1][2],
+                         triangle1[2][0],
+                         triangle1[2][1],
+                         triangle1[2][2])
             add_polygon( polygons,
-                         generator[start][0],
-                         generator[start][1],
-                         generator[start][2],
-                         generator[start+1][0],
-                         generator[start+1][1],
-                         generator[start+1][2],
-                         generator[0][0],
-                         generator[0][1],
-                         generator[0][2])
+                         triangle2[0][0],
+                         triangle2[0][1],
+                         triangle2[0][2],
+                         triangle2[1][0],
+                         triangle2[1][1],
+                         triangle2[1][2],
+                         triangle2[2][0],
+                         triangle2[2][1],
+                         triangle2[2][2])
         else:
+            triangle1 = [generator[start],
+                         generator[start+len(points)],
+                         generator[start+len(points)+1]
+                        ]
+            triangle2 = [generator[start],
+                         generator[start+1+len(points)],
+                         generator[start+1]
+                        ]
+
+            if flip:
+                tmp = triangle1[1][:]
+                triangle1[1] = triangle1[2][:]
+                triangle1[2] = tmp
+
+            if flip:
+                tmp = triangle2[1][:]
+                triangle2[1] = triangle2[2][:]
+                triangle2[2] = tmp
+                
             add_polygon( polygons,
-                         generator[start][0],
-                         generator[start][1],
-                         generator[start][2],
-                         generator[start+len(points)][0],
-                         generator[start+len(points)][1],
-                         generator[start+len(points)][2],
-                         generator[start+len(points)+1][0],
-                         generator[start+len(points)+1][1],
-                         generator[start+len(points)+1][2])
+                             triangle1[0][0],
+                             triangle1[0][1],
+                             triangle1[0][2],
+                             triangle1[1][0],
+                             triangle1[1][1],
+                             triangle1[1][2],
+                             triangle1[2][0],
+                             triangle1[2][1],
+                             triangle1[2][2])
             add_polygon( polygons,
-                         generator[start][0],
-                         generator[start][1],
-                         generator[start][2],
-                         generator[start+len(points)+1][0],
-                         generator[start+len(points)+1][1],
-                         generator[start+len(points)+1][2],
-                         generator[start+1][0],
-                         generator[start+1][1],
-                         generator[start+1][2])
+                         triangle2[0][0],
+                         triangle2[0][1],
+                         triangle2[0][2],
+                         triangle2[1][0],
+                         triangle2[1][1],
+                         triangle2[1][2],
+                         triangle2[2][0],
+                         triangle2[2][1],
+                         triangle2[2][2])
 
 
 def generate_extrusion(name, length, symbols):
