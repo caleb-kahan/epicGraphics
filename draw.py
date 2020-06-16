@@ -2,15 +2,18 @@ from display import *
 from matrix import *
 from gmath import *
 
-
-def add_extrusion(tmp, name, length, symbols):
+def add_extrusion(polygons, name, length, symbols):
+    # Shapes/lids
+    break_shape(name, symbols, polygons, 0)
+    break_shape(name, symbols, polygons, length-1)
+    # Actual extrusion
     shape = symbols[name]
     points = shape[1]['points']
     generator = generate_extrusion(name, length, symbols)
     for j in range(len(points)):
         start = j
         if j == 0:
-            add_polygon( tmp,
+            add_polygon( polygons,
                          generator[start][0],
                          generator[start][1],
                          generator[start][2],
@@ -21,7 +24,7 @@ def add_extrusion(tmp, name, length, symbols):
                          generator[((start+len(points))-1)+len(points)][1],
                          generator[((start+len(points))-1)+len(points)][2])
             # print(start, (start+len(points))-1, ((start+len(points))-1)+len(points))
-            add_polygon( tmp,
+            add_polygon( polygons,
                          generator[start][0],
                          generator[start][1],
                          generator[start][2],
@@ -33,7 +36,7 @@ def add_extrusion(tmp, name, length, symbols):
                          generator[start+len(points)][2])
             # print(start, ((start+len(points))-1)+len(points), start+len(points))
         else:
-            add_polygon( tmp,
+            add_polygon( polygons,
                          generator[start][0],
                          generator[start][1],
                          generator[start][2],
@@ -44,7 +47,7 @@ def add_extrusion(tmp, name, length, symbols):
                          generator[(start-1)+len(points)][1],
                          generator[(start-1)+len(points)][2])
             # print(start, start-1, (start-1)+len(points))
-            add_polygon( tmp,
+            add_polygon( polygons,
                          generator[start][0],
                          generator[start][1],
                          generator[start][2],
@@ -81,6 +84,56 @@ def generate_extrusion(name, length, symbols):
                 z = points[j][1]
             generator.append( [x, y, z] )
     return generator
+
+def break_shape(name, symbols, polygons, other_coordinate):
+    shape = symbols[name]
+    plane = shape[1]['plane']
+    points = shape[1]['points']
+    copy_points = [point[:] for point in points]
+    while len(copy_points) > 2:
+        i = find_ear(copy_points)
+        p1 = copy_points[i-1]
+        p2 = copy_points[i]
+        p3 = copy_points[(i+1) % len(copy_points)]
+        triangle = [p1, p2, p3]
+        make_ccw(triangle)
+        if plane == 'xy':
+            add_polygon(polygons,
+                        triangle[0][0],
+                        triangle[0][1],
+                        other_coordinate,
+                        triangle[1][0],
+                        triangle[1][1],
+                        other_coordinate,
+                        triangle[2][0],
+                        triangle[2][1],
+                        other_coordinate)
+        elif plane == 'xz':
+            add_polygon(polygons,
+                        triangle[0][0],
+                        other_coordinate,
+                        triangle[0][1],
+                        triangle[1][0],
+                        other_coordinate,
+                        triangle[1][1],
+                        triangle[2][0],
+                        other_coordinate,
+                        triangle[2][1])
+        elif plane == 'yz':
+            add_polygon(polygons,
+                        other_coordinate,
+                        triangle[0][0],
+                        triangle[0][1],
+                        other_coordinate,
+                        triangle[0][0],
+                        triangle[0][1],
+                        other_coordinate,
+                        triangle[0][0],
+                        triangle[0][1])
+        else:
+            print("Error: Invalid plane.")
+            break
+        copy_points.pop(i)
 
 def add_shape(tmp, name, symbols):
     shape = symbols[name]
