@@ -211,15 +211,12 @@ def run(filename):
                 if axis == 'x':
                     function = make_rotX
                     translate_matrix = make_translate(0,-translation,0)
-                    translate_matrix_reverse = make_translate(0,translation,0)
                 elif axis == 'y':
                     function = make_rotY
-                    translate_matrix = make_translate(-translation,0,0)
-                    translate_matrix_reverse = make_translate(translation,0,0)
+                    translate_matrix = make_translate(translation,0,0)
                 else:
                     function = make_rotZ
                     translate_matrix = make_translate(0,0,0)
-                    translate_matrix_reverse = make_translate(0,0,0)
 
 
                 shape = symbols[shapeName]
@@ -239,31 +236,16 @@ def run(filename):
                     theta2 = 360/steps * math.pi/180 * (i+1)
                     rotationMatrix1 = function(theta1)
                     rotationMatrix2 = function(theta2)
-                    translate_matrix_copy = [row[:] for row in translate_matrix]
-                    translate_matrix_reverse_copy = [row[:] for row in translate_matrix_reverse]
 
-                    #New Stack with rotation1
-                    #matrix_mult(stack[-1], translate_matrix_copy)
-                    #stack[-1] = [x[:] for x in translate_matrix_copy]
                     matrix_mult(stack[-1],rotationMatrix1)
                     stack[-1] = [ x[:] for x in rotationMatrix1]
-                    #matrix_mult(stack[-1],translate_matrix_reverse_copy)
-                    #stack[-1] = [ x[:] for x in translate_matrix_reverse_copy]
 
                     matrix_mult(stack[-1],border1)
                     stack.pop()
                     stack.append([x[:] for x in stack[-1]] )
 
-                    translate_matrix_copy = [row[:] for row in translate_matrix]
-                    translate_matrix_reverse_copy = [row[:] for row in translate_matrix_reverse]
-
-                    #New Stack with Rotation 2
-                    #matrix_mult(stack[-1], translate_matrix_copy)
-                    #stack[-1] = [x[:] for x in translate_matrix_copy]
                     matrix_mult(stack[-1],rotationMatrix2)
                     stack[-1] = [ x[:] for x in rotationMatrix2]
-                    #matrix_mult(stack[-1],translate_matrix_reverse_copy)
-                    #stack[-1] = [ x[:] for x in translate_matrix_reverse_copy]
 
                     matrix_mult(stack[-1],border2)
                     stack.pop()

@@ -24,7 +24,8 @@ import math
 
 def make_ccw(triangle):
     if not counter_clockwise(triangle[0], triangle[1], triangle[2]):
-        make_ccw([triangle[2], triangle[0], triangle[1]])
+        triangle = [triangle[0], triangle[2], triangle[1]]
+    return triangle
 
 def counter_clockwise(p1, p2, p3):
     x_1, y_1 = p1[0], p1[1]

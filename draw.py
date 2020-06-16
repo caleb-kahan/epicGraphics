@@ -96,7 +96,7 @@ def break_shape(name, symbols, polygons, other_coordinate):
         p2 = copy_points[i]
         p3 = copy_points[(i+1) % len(copy_points)]
         triangle = [p1, p2, p3]
-        make_ccw(triangle)
+        triangle = make_ccw(triangle)
         if plane == 'xy':
             add_polygon(polygons,
                         triangle[0][0],
