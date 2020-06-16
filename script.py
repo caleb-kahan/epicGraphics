@@ -144,6 +144,7 @@ def run(filename):
         consts = ''
         coords = []
         coords1 = []
+        center = [[0,0,0,1]]
 
 
         #Set symbol values for multiple frames
@@ -227,6 +228,7 @@ def run(filename):
 
                 #Here we're pushignt the stack
                 stack.append([x[:] for x in stack[-1]] )
+                matrix_mult(stack[-1],center)
 
                 steps = 360
                 for i in range(steps):
@@ -251,6 +253,7 @@ def run(filename):
                     stack.pop()
                     stack.append([x[:] for x in stack[-1]] )
                     #Stack starts all over again
+
                     add_rotation(border1,border2, tmp)
                 #print(stack[-1])
                 draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)

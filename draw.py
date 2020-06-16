@@ -74,7 +74,7 @@ def add_extrusion(polygons, name, length, symbols):
                 tmp = triangle2[1][:]
                 triangle2[1] = triangle2[2][:]
                 triangle2[2] = tmp
-                
+
             add_polygon( polygons,
                              triangle1[0][0],
                              triangle1[0][1],
@@ -194,61 +194,36 @@ def add_shape(tmp, name, symbols):
             z0,z1 = points[i-1][1],points[i][1]
         draw_line(int(x0),int(y0),int(z0),int(x1),int(y1),int(z1), None, None, None, True, tmp)
 
+
 def add_rotation(border1,border2,polygons):
     length = len(border1)
     for i in range(length):
-        if i == length -1:
-                add_polygon(polygons,
-                        border2[(i+1)%length][0],
-                        border2[(i+1)%length][1],
-                        border2[(i+1)%length][2],
-                        border1[(i+1)%length][0],
-                        border1[(i+1)%length][1],
-                        border1[(i+1)%length][2],
-                        border1[i][0],
-                        border1[i][1],
-                        border1[i][2])
+        if border1[(i+1)%length] != border2[(i+1)%length]:
+            add_polygon(polygons,
+                    border2[(i+1)%length][0],
+                    border2[(i+1)%length][1],
+                    border2[(i+1)%length][2],
+                    border1[(i+1)%length][0],
+                    border1[(i+1)%length][1],
+                    border1[(i+1)%length][2],
+                    border1[i][0],
+                    border1[i][1],
+                    border1[i][2]
 
-                add_polygon(polygons,
-                        border2[i][0],
-                        border2[i][1],
-                        border2[i][2],
-                        border2[(i+1)%length][0],
-                        border2[(i+1)%length][1],
-                        border2[(i+1)%length][2],
-                        border1[i][0],
-                        border1[i][1],
-                        border1[i][2])
+                    )
 
-
-
-        else:
-            if border1[(i+1)%length] != border2[(i+1)%length]:
-                add_polygon(polygons,
-                        border2[(i+1)%length][0],
-                        border2[(i+1)%length][1],
-                        border2[(i+1)%length][2],
-                        border1[(i+1)%length][0],
-                        border1[(i+1)%length][1],
-                        border1[(i+1)%length][2],
-                        border1[i][0],
-                        border1[i][1],
-                        border1[i][2]
-
-                        )
-
-            if border1[i] != border2[i]:
-                add_polygon(polygons,
-                        border2[i][0],
-                        border2[i][1],
-                        border2[i][2],
-                        border2[(i+1)%length][0],
-                        border2[(i+1)%length][1],
-                        border2[(i+1)%length][2],
-                        border1[i][0],
-                        border1[i][1],
-                        border1[i][2])
-
+        if border1[i] != border2[i]:
+            #print("FUCK")
+            add_polygon(polygons,
+                    border2[i][0],
+                    border2[i][1],
+                    border2[i][2],
+                    border2[(i+1)%length][0],
+                    border2[(i+1)%length][1],
+                    border2[(i+1)%length][2],
+                    border1[i][0],
+                    border1[i][1],
+                    border1[i][2])
 
 
 def fill_points(tmp, name, symbols):
