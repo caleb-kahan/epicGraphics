@@ -66,7 +66,7 @@ def find_angle(pointlist, a, b, c):
     c_0, c_1 = pointlist[c][0], pointlist[c][1]
     BA = (a_0-b_0, a_1-b_1)
     BC = (c_0-b_0, c_1-b_1)
-    cosine_of_angle = (BA[0]*BC[0] + BA[1]*BC[1]) / (find_magnitude(BA) * find_magnitude(BC))
+    cosine_of_angle = (BA[0]*BC[0] + BA[1]*BC[1]) / (find_magnitude(BA) * find_magnitude(BC)+0.0000001)
     angle = math.acos(cosine_of_angle)
     return math.degrees(angle)
 

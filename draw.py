@@ -191,7 +191,6 @@ def add_rotation(border1,border2,polygons):
                     )
 
         if border1[i] != border2[i]:
-            #print("FUCK")
             add_polygon(polygons,
                     border2[i][0],
                     border2[i][1],
@@ -299,18 +298,10 @@ def scanline_convert(polygons, i, screen, zbuffer, color):
         y+= 1
 
 
-def find_polygon(polygons,x0,y0,z0,x1,y1,z1,x2,y2,z2):
-    for i in range(0,len(polygons),3):
-        triangle = polygons[i:i+3]
-        if [x0,y0,z0,1] in triangle and [x1,y1,z1,1] in triangle and [x2,y2,z2,1] in triangle:
-            return False
-    return True
-
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
-    if find_polygon(polygons,x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
-        add_point(polygons, x0, y0, z0)
-        add_point(polygons, x1, y1, z1)
-        add_point(polygons, x2, y2, z2)
+    add_point(polygons, x0, y0, z0)
+    add_point(polygons, x1, y1, z1)
+    add_point(polygons, x2, y2, z2)
 
 def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect):
     if len(polygons) < 2:
