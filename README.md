@@ -1,23 +1,51 @@
-## Project: epicGraphics
-**Names and Periods: Caleb Kahan (PD 4) + Eric Shau (PD ?)**</br></br>
-**List of Features we want to implement:**  
-  * New MDL Polygon Functions
-    * Creating 2D polygons with an arbitrary number of edges defined by the user
-    * Creating complex 2D shapes using bounding by functions
-    * Creating complex 2D shapes by intersecting two complex 2D shapes or unionizing. 
-    * Mesh command - fill in 2D shapes
-    * Define the plane as the xy plane, xz plane, or yz plane
-  * Extrusion Command
-    * Create a 3D solid by extruding a given polygon into either the positive or negative direction of the perpindicular axis
-  * Revolution Command
-    * Create a 3D solid by rotating a given polygon around an gien axis
-  * Truncation Command
-    * Modify a 3D solid by bounding the object between axises. (EX: hemisphere)
-  * Volume Command
-    * Find Volume of 3D solid
-  * Combination Commands
-    * Create a New 3D solid from the combination of two 3D solids
-  * Change the behavior of vary
-    * add a parameter to change how it calculates the change over time. e.g. Linear, Exponential, Logarithmic, Arbitrary equation, etc.
-  
+# EpicGraphics
+
+Names: Caleb Kahan (PD 4), Eric Shau (PD 5)
+
+## MDL Commands
+
+- shape
+- extrusion
+- revolution
+
+## shape
+
+```
+shape [name] [plane] [pointlist]
+```
+
+The program stores the shape with that name as described by the plane (xy, xz, or yz) and the pointlist (a list of 2d points on that plane).
+
+**Example**:
+```
+shape caleb xy [(-50,0),(50,0),(50,100),(-50,100)]
+```
+
+## extrusion
+
+```
+extrusion [shape_name] [constants] [length]
+```
+
+The program creates an extrusion of the shape stored previously that has the color described by the constants and extending [length] units in the positive direction.
+NOTE: It only works with **CONVEX** polygons.
+
+**Example**:
+```
+extrusion caleb shiny_purple 60
+```
+
+## revolution
+
+```
+revolution [shape_name] [constants] [axis] [axis number]
+```
+
+The program creates a revolution of the shape stored previously that has the color described by the constants and revolving 360 degrees around the [axis] = [axis number]. [axis] can be x, y, or z, and [axis number] can be any number.
+
+**Example**:
+```
+revolution caleb shiny_purple y 0
+```
+
  
