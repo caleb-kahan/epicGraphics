@@ -10,54 +10,49 @@ def add_extrusion(polygons, name, length, symbols):
     shape = symbols[name]
     points = shape[1]['points']
     generator = generate_extrusion(name, length, symbols)
-    for j in range(len(points)):
-        start = j
-        if j == 0:
+    for start in range(len(points)):
+        if start == len(points) - 1:
             add_polygon( polygons,
                          generator[start][0],
                          generator[start][1],
                          generator[start][2],
-                         generator[(start+len(points))-1][0],
-                         generator[(start+len(points))-1][1],
-                         generator[(start+len(points))-1][2],
-                         generator[((start+len(points))-1)+len(points)][0],
-                         generator[((start+len(points))-1)+len(points)][1],
-                         generator[((start+len(points))-1)+len(points)][2])
-            # print(start, (start+len(points))-1, ((start+len(points))-1)+len(points))
-            add_polygon( polygons,
-                         generator[start][0],
-                         generator[start][1],
-                         generator[start][2],
-                         generator[((start+len(points))-1)+len(points)][0],
-                         generator[((start+len(points))-1)+len(points)][1],
-                         generator[((start+len(points))-1)+len(points)][2],
                          generator[start+len(points)][0],
                          generator[start+len(points)][1],
-                         generator[start+len(points)][2])
-            # print(start, ((start+len(points))-1)+len(points), start+len(points))
+                         generator[start+len(points)][2],
+                         generator[start+1][0],
+                         generator[start+1][1],
+                         generator[start+1][2])
+            add_polygon( polygons,
+                         generator[start][0],
+                         generator[start][1],
+                         generator[start][2],
+                         generator[start+1][0],
+                         generator[start+1][1],
+                         generator[start+1][2],
+                         generator[0][0],
+                         generator[0][1],
+                         generator[0][2])
         else:
             add_polygon( polygons,
                          generator[start][0],
                          generator[start][1],
                          generator[start][2],
-                         generator[start-1][0],
-                         generator[start-1][1],
-                         generator[start-1][2],
-                         generator[(start-1)+len(points)][0],
-                         generator[(start-1)+len(points)][1],
-                         generator[(start-1)+len(points)][2])
-            # print(start, start-1, (start-1)+len(points))
+                         generator[start+len(points)][0],
+                         generator[start+len(points)][1],
+                         generator[start+len(points)][2],
+                         generator[start+len(points)+1][0],
+                         generator[start+len(points)+1][1],
+                         generator[start+len(points)+1][2])
             add_polygon( polygons,
                          generator[start][0],
                          generator[start][1],
                          generator[start][2],
-                         generator[(start-1)+len(points)][0],
-                         generator[(start-1)+len(points)][1],
-                         generator[(start-1)+len(points)][2],
-                         generator[start+len(points)][0],
-                         generator[start+len(points)][1],
-                         generator[start+len(points)][2])
-            # print(start, (start-1)+len(points), start+len(points))
+                         generator[start+len(points)+1][0],
+                         generator[start+len(points)+1][1],
+                         generator[start+len(points)+1][2],
+                         generator[start+1][0],
+                         generator[start+1][1],
+                         generator[start+1][2])
 
 
 def generate_extrusion(name, length, symbols):
