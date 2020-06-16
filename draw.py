@@ -5,7 +5,7 @@ from gmath import *
 def add_extrusion(polygons, name, length, symbols):
     # Shapes/lids
     break_shape(name, symbols, polygons, 0)
-    break_shape(name, symbols, polygons, length-1)
+    break_shape(name, symbols, polygons, length)
     # Actual extrusion
     shape = symbols[name]
     points = shape[1]['points']
@@ -51,7 +51,7 @@ def add_extrusion(polygons, name, length, symbols):
                          generator[start+1+len(points)],
                          generator[start+1]
                         ]
-                        
+
             add_polygon( polygons,
                              triangle1[0][0],
                              triangle1[0][1],
