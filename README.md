@@ -28,7 +28,8 @@ extrusion [shape_name] [constants] [length]
 ```
 
 The program creates an extrusion of the shape stored previously that has the color described by the constants and extending [length] units in the positive direction.
-NOTE: It only works with **CONVEX** polygons.
+
+**NOTE**: It only works with **CONVEX** shapes.
 
 **Example**:
 ```
