@@ -29,7 +29,7 @@ extrusion [shape_name] [constants] [length]
 
 The program creates an extrusion of the shape stored previously that has the color described by the constants and extending [length] units in the positive direction.
 
-**NOTE**: It only works with **CONVEX** shapes.
+**NOTE**: The extrusion command only works with **CONVEX** shapes.
 
 **Example**:
 ```
@@ -48,5 +48,3 @@ The program creates a revolution of the shape stored previously that has the col
 ```
 revolution caleb shiny_purple y 0
 ```
-
- 
