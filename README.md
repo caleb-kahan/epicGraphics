@@ -48,3 +48,7 @@ The program creates a revolution of the shape stored previously that has the col
 ```
 revolution caleb shiny_purple y 0
 ```
+
+## How to Run
+
+Run the test file by 
