@@ -11,10 +11,6 @@ def add_extrusion(polygons, name, length, symbols):
     points = shape[1]['points']
     generator = generate_extrusion(name, length, symbols)
 
-    mainTriangle = [points[0],points[1],points[2]]
-    flip = False
-    if counter_clockwise(mainTriangle[0],mainTriangle[1],mainTriangle[2]):
-        flip = True
     for start in range(len(points)):
         if start == len(points) - 1:
             triangle1 = [generator[start],
@@ -25,15 +21,6 @@ def add_extrusion(polygons, name, length, symbols):
                          generator[start+1],
                          generator[0]
                         ]
-            if flip:
-                tmp = triangle1[1][:]
-                triangle1[1] = triangle1[2][:]
-                triangle1[2] = tmp
-
-            if flip:
-                tmp = triangle2[1][:]
-                triangle2[1] = triangle2[2][:]
-                triangle2[2] = tmp
 
             add_polygon( polygons,
                          triangle1[0][0],
@@ -64,17 +51,7 @@ def add_extrusion(polygons, name, length, symbols):
                          generator[start+1+len(points)],
                          generator[start+1]
                         ]
-
-            if flip:
-                tmp = triangle1[1][:]
-                triangle1[1] = triangle1[2][:]
-                triangle1[2] = tmp
-
-            if flip:
-                tmp = triangle2[1][:]
-                triangle2[1] = triangle2[2][:]
-                triangle2[2] = tmp
-
+                        
             add_polygon( polygons,
                              triangle1[0][0],
                              triangle1[0][1],
