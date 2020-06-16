@@ -172,6 +172,7 @@ def break_shape(name, symbols, polygons, other_coordinate):
             break
         copy_points.pop(i)
 
+<<<<<<< HEAD
 def add_shape(tmp, name, symbols):
     shape = symbols[name]
     plane = shape[1]['plane']
@@ -269,6 +270,57 @@ def fill_points(tmp, name, symbols):
         pass
     elif plane == 'yz':
         pass
+=======
+def add_rotation(border1,border2,polygons):
+    length = len(border1)
+    for i in range(length):
+        if i == length -1:
+                add_polygon(polygons,
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[(i+1)%length][0],
+                        border1[(i+1)%length][1],
+                        border1[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2])
+
+                add_polygon(polygons,
+                        border2[i][0],
+                        border2[i][1],
+                        border2[i][2],
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2])
+        else:
+            if border1[(i+1)%length] != border2[(i+1)%length]:
+                add_polygon(polygons,
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[(i+1)%length][0],
+                        border1[(i+1)%length][1],
+                        border1[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2])
+
+            if border1[i] != border2[i]:
+                add_polygon(polygons,
+                        border2[i][0],
+                        border2[i][1],
+                        border2[i][2],
+                        border2[(i+1)%length][0],
+                        border2[(i+1)%length][1],
+                        border2[(i+1)%length][2],
+                        border1[i][0],
+                        border1[i][1],
+                        border1[i][2])
+>>>>>>> 77a5242758137ddc88695eee2c319d413b614f89
 
 def findTranslationArguments(name,symbols,length):
     shape = symbols[name]
@@ -297,11 +349,6 @@ def modifyBorder(border,plane):
             z = border[i][1]
         newBorder.append([x,y,z,1])
     return newBorder
-
-def badAngle(points,x,y):
-    index = ([i for i in range(len(points)) if points[i] == (x,y)])[0]
-    return (points[index][1] - points[index-1][1]) == (points[index][1] - points[(index+1)%len(points)][1])
-
 
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
     if x0 > x1:
