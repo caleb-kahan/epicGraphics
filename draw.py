@@ -6,81 +6,53 @@ def add_extrusion(polygons, name, length, symbols):
     # Shapes/lids
     break_shape(name, symbols, polygons, 0)
     break_shape(name, symbols, polygons, length-1)
-    for i in polygons:
-        print(i[0], i[1], i[2])
     # Actual extrusion
     shape = symbols[name]
     points = shape[1]['points']
     generator = generate_extrusion(name, length, symbols)
-    for j in range(len(points)):
-        start = j
-        if j == 0:
-            triangle1 = [generator[start],
-                         generator[(start+len(points))-1],
-                         generator[((start+len(points))-1)+len(points)]
-                        ]
-            triangle2 = [generator[start],
-                         generator[((start+len(points))-1)+len(points)],
-                         generator[start+len(points)]
-                        ]
-            triangle1 = make_cw(triangle1)
-            triangle2 = make_cw(triangle2)
-
+    for start in range(len(points)):
+        if start == len(points) - 1:
             add_polygon( polygons,
-                         triangle1[0][0],
-                         triangle1[0][1],
-                         triangle1[0][2],
-                         triangle1[1][0],
-                         triangle1[1][1],
-                         triangle1[1][2],
-                         triangle1[2][0],
-                         triangle1[2][1],
-                         triangle1[2][2])
-
-            # print(start, (start+len(points))-1, ((start+len(points))-1)+len(points))
+                         generator[start][0],
+                         generator[start][1],
+                         generator[start][2],
+                         generator[start+len(points)][0],
+                         generator[start+len(points)][1],
+                         generator[start+len(points)][2],
+                         generator[start+1][0],
+                         generator[start+1][1],
+                         generator[start+1][2])
             add_polygon( polygons,
-                         triangle2[0][0],
-                         triangle2[0][1],
-                         triangle2[0][2],
-                         triangle2[1][0],
-                         triangle2[1][1],
-                         triangle2[1][2],
-                         triangle2[2][0],
-                         triangle2[2][1],
-                         triangle2[2][2])
-            # print(start, ((start+len(points))-1)+len(points), start+len(points))
+                         generator[start][0],
+                         generator[start][1],
+                         generator[start][2],
+                         generator[start+1][0],
+                         generator[start+1][1],
+                         generator[start+1][2],
+                         generator[0][0],
+                         generator[0][1],
+                         generator[0][2])
         else:
-            triangle1 = [generator[start],
-                         generator[start-1],
-                         generator[(start-1)+len(points)]
-                        ]
-            triangle2 = [generator[start],
-                         generator[(start-1)+len(points)],
-                         generator[start+len(points)]]
-            triangle1 = make_cw(triangle1)
-            triangle2 = make_ccw(triangle2)
             add_polygon( polygons,
-                         triangle1[0][0],
-                         triangle1[0][1],
-                         triangle1[0][2],
-                         triangle1[1][0],
-                         triangle1[1][1],
-                         triangle1[1][2],
-                         triangle1[2][0],
-                         triangle1[2][1],
-                         triangle1[2][2])
-            # print(start, start-1, (start-1)+len(points))
+                         generator[start][0],
+                         generator[start][1],
+                         generator[start][2],
+                         generator[start+len(points)][0],
+                         generator[start+len(points)][1],
+                         generator[start+len(points)][2],
+                         generator[start+len(points)+1][0],
+                         generator[start+len(points)+1][1],
+                         generator[start+len(points)+1][2])
             add_polygon( polygons,
-                         triangle2[0][0],
-                         triangle2[0][1],
-                         triangle2[0][2],
-                         triangle2[1][0],
-                         triangle2[1][1],
-                         triangle2[1][2],
-                         triangle2[2][0],
-                         triangle2[2][1],
-                         triangle2[2][2])
-            # print(start, (start-1)+len(points), start+len(points))
+                         generator[start][0],
+                         generator[start][1],
+                         generator[start][2],
+                         generator[start+len(points)+1][0],
+                         generator[start+len(points)+1][1],
+                         generator[start+len(points)+1][2],
+                         generator[start+1][0],
+                         generator[start+1][1],
+                         generator[start+1][2])
 
 
 def generate_extrusion(name, length, symbols):
@@ -157,24 +129,6 @@ def break_shape(name, symbols, polygons, other_coordinate):
             print("Error: Invalid plane.")
             break
         copy_points.pop(i)
-
-def modifyBorder(border,plane):
-    newBorder = []
-    for i in range(len(border)):
-        if plane == 'xy':
-            x = border[i][0]
-            y = border[i][1]
-            z = 0
-        elif plane == 'xz':
-            x = border[i][0]
-            y = 0
-            z = border[i][1]
-        elif plane == 'yz':
-            x = 0
-            y = border[i][0]
-            z = border[i][1]
-        newBorder.append([x,y,z,1])
-    return newBorder
 
 def add_shape(tmp, name, symbols):
     shape = symbols[name]

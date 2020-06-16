@@ -37,7 +37,6 @@ def counter_clockwise(p1, p2, p3):
     x_2, y_2 = p2[0], p2[1]
     x_3, y_3 = p3[0], p3[1]
     val = (y_2 - y_1) * (x_3 - x_2) - (y_3 - y_2) * (x_2 - x_1)
-
     return val <= 0
 
 def find_ear(pointlist):
