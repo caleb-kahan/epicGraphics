@@ -74,7 +74,7 @@ def add_extrusion(polygons, name, length, symbols):
                 tmp = triangle2[1][:]
                 triangle2[1] = triangle2[2][:]
                 triangle2[2] = tmp
-                
+
             add_polygon( polygons,
                              triangle1[0][0],
                              triangle1[0][1],
@@ -172,28 +172,6 @@ def break_shape(name, symbols, polygons, other_coordinate):
             break
         copy_points.pop(i)
 
-def add_shape(tmp, name, symbols):
-    shape = symbols[name]
-    plane = shape[1]['plane']
-    points = shape[1]['points']
-    if len(points) < 2:
-        print('Need at least 2 points to draw')
-        return
-    for i in range(len(points)):
-        if plane == 'xy':
-            x0,x1 = points[i-1][0],points[i][0]
-            y0,y1 = points[i-1][1],points[i][1]
-            z0,z1 = 0,0
-        elif plane == 'xz':
-            x0,x1 = points[i-1][0],points[i][0]
-            y0,y1 = 0,0
-            z0,z1 = points[i-1][1],points[i][1]
-        elif plane == 'yz':
-            x0,x1 = 0,0
-            y0,y1 = points[i-1][0],points[i][0]
-            z0,z1 = points[i-1][1],points[i][1]
-        draw_line(int(x0),int(y0),int(z0),int(x1),int(y1),int(z1), None, None, None, True, tmp)
-
 def add_rotation(border1,border2,polygons):
     length = len(border1)
     for i in range(length):
@@ -219,9 +197,6 @@ def add_rotation(border1,border2,polygons):
                         border1[i][0],
                         border1[i][1],
                         border1[i][2])
-
-
-
         else:
             if border1[(i+1)%length] != border2[(i+1)%length]:
                 add_polygon(polygons,
@@ -233,9 +208,7 @@ def add_rotation(border1,border2,polygons):
                         border1[(i+1)%length][2],
                         border1[i][0],
                         border1[i][1],
-                        border1[i][2]
-
-                        )
+                        border1[i][2])
 
             if border1[i] != border2[i]:
                 add_polygon(polygons,
@@ -248,52 +221,6 @@ def add_rotation(border1,border2,polygons):
                         border1[i][0],
                         border1[i][1],
                         border1[i][2])
-
-
-
-def fill_points(tmp, name, symbols):
-    shape = symbols[name]
-    plane = shape[1]['plane']
-    points = shape[1]['points']
-    badPoints = [points[i] for i in range(len(points)) if badAngle(points,points[i][0],points[i][1])]
-    allBadPoints = set(badPoints)
-    print(len(points))
-    xCor = [tmp[i][0] for i in range(len(tmp))]
-    yCor = [tmp[i][1] for i in range(len(tmp))]
-    zCor = [tmp[i][2] for i in range(len(tmp))]
-    xMin = min(xCor)
-    xMax = max(xCor)
-    yMin = min(yCor)
-    yMax = max(yCor)
-    zMin = min(zCor)
-    zMax = max(zCor)
-    if plane == 'xy':
-        for i in range(0,len(tmp)):
-            for badPoint in badPoints:
-                #print(i,j)
-                if math.sqrt(math.pow(tmp[i][0]-badPoint[0],2)+math.pow(tmp[i][1]-badPoint[1],2))<2:
-                    allBadPoints.add((tmp[i][0],tmp[i][1]))
-        for y in range(yMin,yMax+1):
-            status = False
-            completion = True
-            for x in range(xMin,xMax+1):
-                if (x,y) in allBadPoints:
-                    completion = False
-                elif [x,y,0,1] in tmp or (x,y) in points:
-                    #if y == 139:
-                    #    print(x,y)
-                    if completion == True:
-                        status = not status
-                        completion = False
-                else:
-                    completion = True
-                    if status:
-                        tmp.append([x,y,0,1])
-                        #print(x,y)
-    elif plane == 'xz':
-        pass
-    elif plane == 'yz':
-        pass
 
 def findTranslationArguments(name,symbols,length):
     shape = symbols[name]
@@ -322,11 +249,6 @@ def modifyBorder(border,plane):
             z = border[i][1]
         newBorder.append([x,y,z,1])
     return newBorder
-
-def badAngle(points,x,y):
-    index = ([i for i in range(len(points)) if points[i] == (x,y)])[0]
-    return (points[index][1] - points[index-1][1]) == (points[index][1] - points[(index+1)%len(points)][1])
-
 
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
     if x0 > x1:

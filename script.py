@@ -203,8 +203,7 @@ def run(filename):
                 tmp = []
             elif c == 'revolution':
                 shapeName = command['name']
-                if command['constants']:
-                    reflect = command['constants']
+                reflect = command['constants']
                 axis = args[0]
                 translation = args[1]
                 #Some funcitonal programming here
@@ -217,7 +216,6 @@ def run(filename):
                 else:
                     function = make_rotZ
                     translate_matrix = make_translate(0,0,0)
-
 
                 shape = symbols[shapeName]
                 plane = shape[1]['plane']
@@ -255,8 +253,6 @@ def run(filename):
                 #print(stack[-1])
                 draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
                 tmp = []
-
-
             elif c == 'move':
                 if command['knob']:
                     knob_value = symbols[command['knob']][1]
