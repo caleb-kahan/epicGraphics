@@ -1,0 +1,27 @@
+constants white 0.2 0.5 0.5 0.2 0.5 0.5 0.2 0.5 0.5
+shape eric xy [(50,0),(25,43),(-25,43),(-50,0),(-25,-43),(25,-43)]
+shape caleb xy [(0,0),(35,0),(0,100)]
+push
+move 50 150 0
+rotate y -10
+rotate x 10
+box white 0 0 0 350 10 250
+push
+move 100 43 -225
+rotate y -30
+move 60 0 0
+extrusion eric white 125
+pop
+push
+move 100 123 -115
+rotate z -110
+rotate y -20
+revolution caleb white y 0
+pop
+push
+move 200 100 -75
+rotate y -10
+box white 0 0 0 100 100 100
+move 40 50 -50
+sphere white 0 0 0 50
+save eric_image.png

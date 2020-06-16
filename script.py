@@ -254,6 +254,7 @@ def run(filename):
                     #Stack starts all over again
 
                     add_rotation(border1,border2, tmp)
+                stack.pop()
                 #print(stack[-1])
                 draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
                 tmp = []
