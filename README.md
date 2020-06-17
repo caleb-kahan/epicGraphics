@@ -9,6 +9,15 @@ Names: Caleb Kahan (PD 4), Eric Shau (PD 5)
 - revolution
 - print
 
+## print
+
+```
+print [text]
+```
+
+This was created specfically for the readibility of the testing by you. With no argument, "print" prints a new line helpful for seperating text, and with an argument prints the text, given there are no spaces (No regex manipulation on our part for this). 
+
+
 ## shape
 
 ```
