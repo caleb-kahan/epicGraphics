@@ -24,4 +24,5 @@ rotate y -10
 box white 0 0 0 100 100 100
 move 40 50 -50
 sphere white 0 0 0 50
+display
 save eric_image.png

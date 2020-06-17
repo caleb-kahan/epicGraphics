@@ -44,7 +44,8 @@ tokens = (
     "DISPLAY",
     "SCREEN",
     "WEB",
-    "CO"
+    "CO",
+    "PRINT"
 )
 
 reserved = {
@@ -92,7 +93,8 @@ reserved = {
     "setknobs" : "SET_KNOBS",
     "focal" : "FOCAL",
     "display" : "DISPLAY",
-    "web" : "WEB"
+    "web" : "WEB",
+    "print" : "PRINT"
 }
 
 t_ignore = " \t"
@@ -411,6 +413,10 @@ def p_focal(p):
 def p_web(p):
     "command : WEB"
     commands.append({'op':p[1], 'args':None})
+
+def p_print(p):
+    "command : PRINT TEXT"
+    commands.append({'op':p[1], 'args':[p[2]]})
 
 def p_texture(p):
     "command : TEXTURE SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER"

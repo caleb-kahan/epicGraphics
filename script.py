@@ -155,7 +155,6 @@ def run(filename):
                 print('\tkob: ' + knob + '\tvalue: ' + str(frame[knob]))
 
         for command in commands:
-            print(command)
             c = command['op']
             args = command['args']
             knob_value = 1
@@ -295,6 +294,8 @@ def run(filename):
                 display(screen)
             elif c == 'save':
                 save_extension(screen, args[0] + '.png')
+            elif c == 'print':
+                print(args[0])
             # end operation loop
         if num_frames > 1:
             fname = 'anim/%s%03d.png'%(name, f)
