@@ -51,5 +51,6 @@ revolution caleb shiny_purple y 0
 ```
 
 ## How to Run
-You can test the two submission files to the gallery by either entering "make gallery1" or "make gallery2"
+```You can test the two submission files to the gallery by either entering "make gallery1" or "make gallery2"
+```
 You can also a test a long submission file testing print, Revolution, Extrusion, and shape, which displays several objects one a time by just entering "make"
