@@ -7,6 +7,7 @@ Names: Caleb Kahan (PD 4), Eric Shau (PD 5)
 - shape
 - extrusion
 - revolution
+- print
 
 ## shape
 
@@ -50,5 +51,5 @@ revolution caleb shiny_purple y 0
 ```
 
 ## How to Run
-
-Run the test file by blank.
+You can test the two submission files to the gallery by either entering "make gallery1" or "make gallery2"
+You can also a test a long submission file testing print, Revolution, Extrusion, and shape, which displays several objects one a time by just entering "make"
