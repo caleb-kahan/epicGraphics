@@ -295,7 +295,10 @@ def run(filename):
             elif c == 'save':
                 save_extension(screen, args[0] + '.png')
             elif c == 'print':
-                print(args[0])
+                if not args:
+                    print("")
+                else:
+                    print(args[0])
             # end operation loop
         if num_frames > 1:
             fname = 'anim/%s%03d.png'%(name, f)

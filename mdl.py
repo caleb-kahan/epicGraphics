@@ -415,8 +415,12 @@ def p_web(p):
     commands.append({'op':p[1], 'args':None})
 
 def p_print(p):
-    "command : PRINT TEXT"
-    commands.append({'op':p[1], 'args':[p[2]]})
+    """command : PRINT TEXT
+               | PRINT"""
+    cmd = {'op':p[1], 'args': None}
+    if len(p) > 2:
+        cmd['args'] = [p[2]]
+    commands.append(cmd)
 
 def p_texture(p):
     "command : TEXTURE SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER"
