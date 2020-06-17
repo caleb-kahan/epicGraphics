@@ -292,6 +292,9 @@ def run(filename):
                 stack.pop()
             elif c == 'display':
                 display(screen)
+                clear_screen(screen)
+                clear_zbuffer(zbuffer)
+
             elif c == 'save':
                 save_extension(screen, args[0] + '.png')
             elif c == 'print':
