@@ -39,7 +39,7 @@ extrusion [shape_name] [constants] [length]
 
 The program creates an extrusion of the shape stored previously that has the color described by the constants and extending [length] units in the positive direction.
 
-**NOTE**: The extrusion command only works with **CONVEX** shapes.
+**NOTE**: The extrusion command works best with convex shapes.
 
 **Example**:
 ```
@@ -52,7 +52,7 @@ extrusion caleb shiny_purple 60
 revolution [shape_name] [constants] [axis] [axis number]
 ```
 
-The program creates a revolution of the shape stored previously that has the color described by the constants and revolving 360 degrees around the [axis] = [axis number]. [axis] can be x, y, or z, and [axis number] can be any number.
+The program creates a revolution of the shape stored previously that has the color described by the constants and revolving 360 degrees around the [axis] = [axis number]. [axis] can be x, y, or z, and [axis number] can be any number. The bigger the axis number, the farther away the object will be from the axis of rotation, and the bigger the radius the revolution will be. This can help create holes in the 3d object. 
 
 **Example**:
 ```
