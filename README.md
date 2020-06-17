@@ -24,7 +24,7 @@ This was created specfically for the readibility of the testing by you. With no 
 shape [name] [plane] [pointlist]
 ```
 
-The program stores the shape with that name as described by the plane (xy, xz, or yz) and the pointlist (a list of 2d points on that plane).
+The program stores the shape with that name as described by the plane (xy, xz, or yz) and the pointlist (a list of 2d points on that plane). Using some regex manipulation in the mdl code, we were able to extract an indefinite amount of points and then used the python "eval" function to convert the string to an python object.
 
 **Example**:
 ```
@@ -37,7 +37,7 @@ shape caleb xy [(-50,0),(50,0),(50,100),(-50,100)]
 extrusion [shape_name] [constants] [length]
 ```
 
-The program creates an extrusion of the shape stored previously that has the color described by the constants and extending [length] units in the positive direction.
+The program creates an extrusion of the shape stored previously that has the color described by the constants and extending [length] units in the positive direction. We devised our own algirithm for the body of the 3-d solid, and used an ear-clipping algirthm to fill in the polygon faces on "top" and "bottom"
 
 **NOTE**: The extrusion command works best with convex shapes.
 
@@ -52,7 +52,7 @@ extrusion caleb shiny_purple 60
 revolution [shape_name] [constants] [axis] [axis number]
 ```
 
-The program creates a revolution of the shape stored previously that has the color described by the constants and revolving 360 degrees around the [axis] = [axis number]. [axis] can be x, y, or z, and [axis number] can be any number. The bigger the axis number, the farther away the object will be from the axis of rotation, and the bigger the radius the revolution will be. This can help create holes in the 3d object. 
+The program creates a revolution of the shape stored previously that has the color described by the constants and revolving 360 degrees around the [axis] = [axis number]. [axis] can be x, y, or z, and [axis number] can be any number. The bigger the axis number, the farther away the object will be from the axis of rotation, and the bigger the radius the revolution will be. This can help create holes in the 3d object.
 
 **Example**:
 ```
